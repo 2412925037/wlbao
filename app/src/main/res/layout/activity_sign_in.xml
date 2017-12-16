@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/comman_topbar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/all_pink"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/size_120dp"
+                    android:layout_height="@dimen/size_180dp"
+                    android:paddingBottom="@dimen/size_20dp"
+                    android:src="@mipmap/qiandao_toppic" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/size_20dp"
+                        android:layout_marginTop="@dimen/size_30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="用户名："
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/first_textsize" />
+
+                        <TextView
+                            android:id="@+id/tv_sign_in_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="特洛夫斯基"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/first_textsize" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="目前已获得："
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/first_textsize" />
+
+                        <TextView
+                            android:id="@+id/tv_sign_in_score"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/super_large_textsize"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="积分"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/first_textsize" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_marginBottom="@dimen/size_20dp"
+                        android:id="@+id/tv_sign_in_exchange"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="16dp"
+                        android:gravity="right"
+                        android:text="立即兑换>>"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/small_textsize" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/size_10dp"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_sign_in_now"
+                            android:layout_width="@dimen/size_100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@mipmap/qiandao_yellow_bg"
+                            android:gravity="center"
+                            android:padding="@dimen/size_5dp"
+                            android:text="立 即 签 到"
+                            android:textColor="@color/all_text_color"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_sign_in_record"
+                            android:layout_width="@dimen/size_0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="@dimen/size_20dp"
+                            android:layout_weight="1"
+                            android:drawableRight="@mipmap/down_jiantou"
+                            android:gravity="right"
+                            android:text="查看签到记录"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/second_textsize" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_sign_in_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/size_5dp"
+                    android:text="签到详情"
+                    android:textColor="@color/all_text_color"
+                    android:textSize="@dimen/large_textsize" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/img_sign_in_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/size_5dp"
+                        android:src="@mipmap/arrow_left_black" />
+
+                    <TextView
+                        android:id="@+id/tv_sign_in_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2017年4月"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="@dimen/large_textsize"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/img_sign_in_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/size_5dp"
+                        android:src="@mipmap/arrow_right_black" />
+                </LinearLayout>
+
+
+                <com.renhuikeji.wanlb.wanlibao.views.MyGridView
+                    android:id="@+id/gv_sign_in_date_week"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/orange_bg"
+                    android:listSelector="#00000000"
+                    android:numColumns="7"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grey_bg"
+                    android:orientation="vertical">
+
+                    <com.renhuikeji.wanlb.wanlibao.views.MyGridView
+                        android:id="@+id/gv_sign_in_date_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:listSelector="#00000000"
+                        android:numColumns="7" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/size_20dp"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/size_5dp">
+
+                        <TextView
+                            android:layout_width="@dimen/size_0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="今日签到奖励："
+                            android:textColor="@color/all_text_color" />
+
+                        <TextView
+                            android:id="@+id/tv_sign_in_points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/red_text" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_sign_in_record_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_margin="@dimen/size_5dp"
+                        android:drawableRight="@mipmap/up_black_jiantou"
+                        android:gravity="center_vertical"
+                        android:text="收起"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="@dimen/second_textsize" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_sign_in_ruletitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/size_10dp"
+                android:text="签到规则"
+                android:textColor="@color/red_text"
+                android:textSize="@dimen/large_textsize" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/size_20dp"
+                android:layout_marginRight="@dimen/size_20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/all_text_color"
+                        android:text="1、"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:text="万利宝签到六天为一个周期，每日连续签到。最高可获得积分：30分/次。"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/all_text_color"
+                        android:text="2、"/>
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="签到积分规则如下："
+                        android:textColor="@color/all_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:visibility="invisible"
+                        android:textColor="@color/all_text_color"
+                        android:text="2、"/>
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:id="@+id/tv_sign_in_rules1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="第一天：5分\n第二天：10分\n第三天：15分\n第四天：20分\n第五天：25分\n第六天：30分"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/all_text_color"
+                        android:text="3、"/>
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="一周内如果中间中断签到，将重新开始。"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/all_text_color"
+                        android:text="4、"/>
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="一人一日限签到一次。"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/all_text_color"
+                        android:text="5、"/>
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="积分兑换：签到积分可以直接兑换成现金，具体方式如下:"
+                        android:textColor="@color/all_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:visibility="invisible"
+                        android:textColor="@color/all_text_color"
+                        android:text="5、"/>
+                    <TextView
+                        android:textScaleX="1.1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/all_text_color"
+                        android:id="@+id/rule_tv"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_20dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

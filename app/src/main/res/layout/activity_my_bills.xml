@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/comman_topbar" />
+
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
+        android:background="@color/app_bg_color"
+        android:id="@+id/lrv_my_bills"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/tv_general_goods_no_net"
+        style="@style/text_no_net" />
+
+    <include
+        android:id="@+id/empty_general_goods"
+        layout="@layout/layout_empty"
+        android:visibility="gone"/>
+
+</LinearLayout>

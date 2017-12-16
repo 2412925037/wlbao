@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_48dp"
+        android:background="@color/all_pink">
+
+        <ImageView
+            android:id="@+id/img_wechat_cash_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="@dimen/size_10dp"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_wechat_cash_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="支付宝提现"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/first_textsize" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:background="@color/line_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.renhuikeji.wanlb.wanlibao.views.CircleImageView
+            android:id="@+id/cimg_wechat_cash_icon"
+            android:layout_width="@dimen/size_60dp"
+            android:layout_height="@dimen/size_60dp"
+            android:layout_margin="@dimen/size_5dp"
+            android:src="@mipmap/icon_yh" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="支付宝账号: "
+                android:textColor="@color/all_text_color"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/et_wechat_cash_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/all_text_color"
+                android:textSize="@dimen/second_textsize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_10dp"
+            android:background="@drawable/shape_btn_white_corner"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/size_20dp"
+            android:paddingTop="@dimen/size_20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/size_15dp"
+                android:paddingLeft="@dimen/size_15dp"
+                android:text="转账金额"
+                android:textSize="@dimen/large_textsize" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:paddingBottom="@dimen/size_5dp"
+                android:paddingLeft="@dimen/size_15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="￥"
+                    android:textColor="@color/all_text_color"
+                    android:textSize="@dimen/large_textsize" />
+
+                <EditText
+                    android:id="@+id/et_wechat_cash_money"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:hint="0.00"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:textColorHint="@color/grey_text"
+                    android:textSize="@dimen/large_textsize" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_height"
+                android:background="@color/line_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/size_15dp"
+                android:layout_marginTop="@dimen/size_10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="可用余额:"
+                    android:textColor="@color/grey_text" />
+
+                <TextView
+                    android:id="@+id/tv_wechat_cash_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_5dp"
+                    android:text="0元"
+                    android:textColor="@color/red_text" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_wechat_cash_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_10dp"
+            android:background="@drawable/shape_btn_red_halfcircle"
+            android:gravity="center"
+            android:padding="@dimen/size_5dp"
+            android:text="确 认 转 账"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/large_textsize" />
+    </LinearLayout>
+</LinearLayout>

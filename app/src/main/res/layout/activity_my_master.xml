@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_bg"
+    android:orientation="vertical">
+
+    <include layout="@layout/comman_topbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_80dp"
+        android:background="@color/colorWhite">
+
+        <com.renhuikeji.wanlb.wanlibao.views.CircleImageView
+            android:id="@+id/civ_my_master_user"
+            android:layout_width="@dimen/size_60dp"
+            android:layout_height="@dimen/size_60dp"
+            android:layout_margin="@dimen/size_10dp"
+            android:src="@mipmap/icon_yh" />
+
+        <View
+            android:id="@+id/v_my_master_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/size_10dp"
+            android:layout_centerVertical="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/v_my_master_empty"
+            android:layout_toRightOf="@id/civ_my_master_user"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="微信昵称："
+                android:textColor="@color/grey_text"
+                android:textSize="@dimen/first_textsize" />
+
+            <TextView
+                android:id="@+id/tv_my_master_wechat_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/all_text_color"
+                android:textSize="@dimen/first_textsize" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/v_my_master_empty"
+            android:layout_toRightOf="@id/civ_my_master_user"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机号码："
+                android:textColor="@color/grey_text"
+                android:textSize="@dimen/first_textsize" />
+
+            <TextView
+                android:id="@+id/tv_my_master_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="13435654675"
+                android:textColor="@color/all_text_color"
+                android:textSize="@dimen/first_textsize" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lv_my_master"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_5dp"
+        android:background="@color/colorWhite" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_margin="@dimen/size_5dp"
+        android:layout_height="wrap_content"
+        android:text="温馨提示：如果您对操作不太熟悉或者有其他不清楚的地方，请直接与您的推荐人联系，或者在万利宝微信公众号留言咨询"
+        android:textColor="@color/red_text"
+        android:textSize="@dimen/third_textsize" />
+</LinearLayout>

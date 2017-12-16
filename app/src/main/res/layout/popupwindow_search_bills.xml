@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:divider="@drawable/divider"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_10dp"
+        android:layout_marginTop="@dimen/size_10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/size_10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="关键词："
+            android:textColor="@color/all_text_color"
+            android:textSize="@dimen/large_textsize" />
+
+        <EditText
+            android:id="@+id/et_search_bill_keyword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_48dp"
+            android:layout_marginLeft="@dimen/size_5dp"
+            android:layout_marginRight="@dimen/size_20dp"
+            android:background="@drawable/shape_btn_grey_rectangle_5corner"
+            android:hint=" 搜淘宝商品或粘贴商品标题"
+            android:padding="@dimen/size_10dp"
+            android:textColorHint="@color/grey_text"
+            android:textSize="@dimen/second_textsize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_10dp"
+        android:layout_marginTop="@dimen/size_10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/size_10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最低返："
+            android:textColor="@color/all_text_color"
+            android:textSize="@dimen/large_textsize" />
+
+        <EditText
+            android:id="@+id/et_search_bill_least_rebase"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_48dp"
+            android:layout_marginLeft="@dimen/size_5dp"
+            android:layout_marginRight="@dimen/size_20dp"
+            android:background="@drawable/shape_btn_grey_rectangle_5corner"
+            android:hint=" 最低返利比例 例如：20 可不填"
+            android:inputType="number"
+            android:padding="@dimen/size_10dp"
+            android:textColorHint="@color/grey_text"
+            android:textSize="@dimen/second_textsize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_search_bill_cost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_10dp"
+        android:layout_marginTop="@dimen/size_10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/size_10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="价    格："
+            android:textColor="@color/all_text_color"
+            android:textSize="@dimen/large_textsize" />
+
+        <EditText
+            android:id="@+id/et_search_bill_least_cost"
+            android:layout_width="@dimen/size_0dp"
+            android:layout_height="@dimen/size_48dp"
+            android:layout_marginLeft="@dimen/size_5dp"
+            android:layout_marginRight="@dimen/size_20dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_btn_grey_rectangle_5corner"
+            android:gravity="center"
+            android:hint="0.00"
+            android:inputType="numberDecimal"
+            android:padding="@dimen/size_10dp"
+            android:textColorHint="@color/grey_text"
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="至"
+            android:textColor="@color/all_text_color"
+            android:textSize="@dimen/large_textsize" />
+
+        <EditText
+            android:id="@+id/et_search_bill_most_cost"
+            android:layout_width="@dimen/size_0dp"
+            android:layout_height="@dimen/size_48dp"
+            android:layout_marginLeft="@dimen/size_20dp"
+            android:layout_marginRight="@dimen/size_20dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_btn_grey_rectangle_5corner"
+            android:gravity="center"
+            android:hint="99999.00"
+            android:inputType="numberDecimal"
+            android:padding="@dimen/size_10dp"
+            android:textColorHint="@color/grey_text"
+            android:textSize="@dimen/second_textsize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_10dp"
+        android:layout_marginTop="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/size_10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="超级返："
+            android:textColor="@color/all_text_color"
+            android:textSize="@dimen/large_textsize" />
+
+        <CheckBox
+            android:id="@+id/cb_search_bill_super_rebase"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/size_48dp"
+            android:layout_marginLeft="@dimen/size_5dp"
+            android:layout_weight="1"
+            android:button="@drawable/selector_checkbox_icon"
+            android:hint="90%商品返利超50%"
+            android:padding="@dimen/size_10dp"
+            android:textColorHint="@color/grey_text"
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_search_bill_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_5dp"
+            android:layout_marginRight="@dimen/size_20dp"
+            android:drawableLeft="@mipmap/icon_screen"
+            android:text="筛选"
+            android:textColor="@color/all_text_color"
+            android:textSize="@dimen/large_textsize" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_search_bill_click"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/size_10dp"
+            android:layout_marginLeft="@dimen/size_20dp"
+            android:layout_marginRight="@dimen/size_20dp"
+            android:layout_marginTop="@dimen/size_15dp"
+            android:background="@drawable/shape_btn_red_halfcircle"
+            android:gravity="center"
+            android:padding="@dimen/size_15dp"
+            android:text="搜淘宝，拿返利"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/first_textsize" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="24小时无订单信息，请到会员中心认领订单！"
+            android:textColor="@color/grey_text"
+            android:textSize="@dimen/second_textsize" />
+
+    </LinearLayout>
+</LinearLayout>

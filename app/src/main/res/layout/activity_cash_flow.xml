@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/all_pink">
+
+        <ImageView
+            android:id="@+id/img_cash_flow_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/size_15dp"
+            android:paddingRight="@dimen/size_15dp"
+            android:src="@mipmap/icon_back" />
+
+        <TextView
+            android:id="@+id/tv_cash_flow_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="万利宝钱包"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/first_textsize" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:background="@color/line_gray" />
+
+    <com.renhuikeji.wanlb.wanlibao.views.MyScrollView
+        android:id="@+id/msv_cash_flow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/size_15dp"
+                android:layout_marginRight="@dimen/size_15dp"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/size_10dp"
+                android:paddingTop="@dimen/size_10dp">
+
+                <TextView
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ID:"
+                    android:textColor="@color/all_text_color"
+                    android:textSize="@dimen/large_textsize" />
+
+                <TextView
+                    android:id="@+id/cashflow_id_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/all_text_color"
+                    android:textSize="@dimen/large_textsize" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/size_15dp"
+                android:layout_marginRight="@dimen/size_15dp"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/size_10dp"
+                android:paddingTop="@dimen/size_10dp">
+
+                <TextView
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="可用余额"
+                    android:textColor="@color/all_text_color"
+                    android:textSize="@dimen/large_textsize" />
+
+                <TextView
+                    android:id="@+id/cashflow_money_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red_text"
+                    android:textSize="@dimen/large_textsize" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="元"
+                    android:textColor="@color/red_text"
+                    android:textSize="@dimen/third_textsize" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/size_15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_financialdetails"
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/size_5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_btn_red_rectangle"
+                    android:gravity="center"
+                    android:padding="@dimen/size_3dp"
+                    android:text="资 金 明 细"
+                    android:textColor="@color/red_text"
+                    android:textSize="@dimen/large_textsize"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/to_WeChat_tv"
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_btn_red_corner"
+                    android:gravity="center"
+                    android:padding="@dimen/size_3dp"
+                    android:text="立 即 提 现"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/large_textsize"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_10dp"
+                android:background="@color/grey_bg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/size_10dp"
+                android:paddingLeft="@dimen/size_15dp"
+                android:paddingRight="@dimen/size_15dp"
+                android:paddingTop="@dimen/size_10dp"
+                android:text="您已累积获得："
+                android:textColor="@color/all_text_color"
+                android:textSize="@dimen/large_textsize" />
+
+            <com.renhuikeji.wanlb.wanlibao.views.MyListView
+                android:id="@+id/lv_cash_flow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none" />
+        </LinearLayout>
+    </com.renhuikeji.wanlb.wanlibao.views.MyScrollView>
+</LinearLayout>

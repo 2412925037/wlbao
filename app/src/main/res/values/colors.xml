@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorTextGray">#FF5C5C5C</color>
+
+    <!--button按钮-->
+    <color name="colorBtnBlue">#FF448FE0</color>
+    <color name="colorBtnDeepBlue">#2d82de</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGray">#999D9C</color>
+    <color name="colorBaseBlue">#48909E</color>
+
+    <!-- 加载图片时的默认颜色 -->
+    <color name="loading_img_default_color">#e6e6e6</color>
+    <!--统一主红色 -->
+    <color name="all_pink">#FF4323</color>
+    <!--按下效果的红色 -->
+    <color name="all_pink_pressed">#EE2F0E</color>
+    <!--顶部沉浸颜色-->
+    <color name="all_immerse">#cc004e</color>
+    <!--统一 一级标题文字颜色 -->
+    <color name="all_text_color">#333333</color>
+    <!--统一 二級文字 -->
+    <color name="classify_gray">#666666</color>
+    <!--统一 三級文字 统一辅助标题类文字最弱化文字 -->
+    <color name="grey_text">#999999</color>
+
+    <!--统一界面背景色 -->
+    <color name="app_bg_color">#F5F5F5</color>
+    <!--统一分割线板块边框 -->
+    <color name="line_gray">#cccccc</color>
+    <!--item选项单击后的颜色 -->
+    <color name="item_down_gray">#e6e6e6</color>
+
+    <!--红色字 颜色-->
+    <color name="red_text">#ff4323</color>
+    <!--浅灰色-->
+    <color name="weakcolor_grey">#DDDDDD</color>
+    <!--灰色背景-->
+    <color name="grey_bg">#F0F0F0</color>
+    <!--橙色背景-->
+    <color name="orange_bg">#FBBC0F</color>
+
+    <!--认领订单顶部背景-->
+    <color name="grey_bg_top">#f2f2f2</color>
+
+    <!--橙色按钮-->
+    <color name="orange_btn">#ffb225</color>
+    <!--个人中心灰色辅助字颜色-->
+    <color name="personal_grey_text">#6f6f6f</color>
+
+    <!-- 分类一级菜单背景-->
+    <color name="cat_first_bg">#fbfbfb</color>
+    <!-- 分类一级菜单背景分隔线-->
+    <color name="cat_first_divider">#c9c9c9</color>
+    <!-- 分类二级菜单背景-->
+    <color name="cat_second_bg">#eeeeee</color>
+
+    <color name="fuzhu_yellow">#FFBE23</color>
+    <color name="fuzhu_black">#111111</color>
+    <color name="fuzhu_red">#ff4323</color>
+    <color name="jiaobiao_green">#15be10</color>
+    <color name="jiaobiao_red">#ff0c73</color>
+    <color name="backto_top">#ffffffff</color>
+    <color name="transparency">#93ffffff</color>
+    <color name="transparency_title">#00000000</color>
+    <color name="btn_blue_normal">#3d5fe6</color>
+    <color name="btn_gray_normal">#F5F5F5</color>
+</resources>

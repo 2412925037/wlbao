@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/colorWhite"
+    android:id="@+id/big"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/size_10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="@dimen/size_10dp">
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/item_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="165dp">
+        <com.renhuikeji.wanlb.wanlibao.views.LabelImageView
+            android:id="@+id/general_item_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:backgroundColor="@color/jiaobiao_green"
+            app:direction="leftTop"
+            app:labelBottomPadding="4dp"
+            app:labelTopPadding="8dp"
+            app:textContent="推荐"
+            app:textContentSize="9sp"
+            app:textTitleColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/text_quan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/jiaobiao_bg"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:text="领券省\n\r5元"
+            android:textColor="#ffffff"
+            android:textSize="9sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="126dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:id="@+id/item_list_layout1"
+            android:layout_width="116dp"
+            android:layout_height="116dp">
+            <com.renhuikeji.wanlb.wanlibao.views.LabelImageView
+                android:id="@+id/general_itemlist_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:backgroundColor="@color/jiaobiao_green"
+                android:scaleType="centerCrop"
+                app:direction="leftTop"
+                app:labelBottomPadding="4dp"
+                app:labelTopPadding="7dp"
+                app:textContentSize="9sp"
+                app:textContent="推荐"
+                app:textTitleColor="#ffffff" />
+            <TextView
+                android:id="@+id/text_list_quan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/jiaobiao_bg"
+                android:gravity="center"
+                android:maxLines="2"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:text="领券省\n\r5元"
+                android:textColor="#ffffff"
+                android:textSize="9sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+    <LinearLayout
+        android:paddingLeft="@dimen/size_10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="116dp">
+        <TextView
+            android:id="@+id/general_item_goodIntroduce"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="速度快高考的感觉大圣归来公开  大概  都快高考  看看"
+            android:textColor="@color/classify_gray"
+            android:textSize="14sp" />
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/general_item_nowprice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="$39.00"
+                android:textColor="@color/fuzhu_red"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/general_item_oldprice"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:text="$39.00"
+                android:textColor="@color/grey_text"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/super_tv_haveshape"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/size_2dp"
+                android:layout_marginRight="@dimen/size_5dp"
+                android:layout_marginTop="@dimen/size_2dp"
+                android:background="@drawable/fan_bg"
+                android:gravity="center"
+                android:text="返"
+                android:textColor="@color/fuzhu_red"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/super_tv_fanmiddle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/super_tv_haveshape"
+                android:gravity="center_vertical"
+                android:text="39"
+                android:textColor="@color/fuzhu_red"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:id="@+id/super_ll_lingquan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/super_tv_haveshape"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/super_tv_lingquan"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/lingquan_bg"
+                    android:gravity="center"
+                    android:text="领券"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/super_tv_quanNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/quan_num_bg"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/size_5dp"
+                    android:paddingRight="@dimen/size_5dp"
+                    android:text="领券"
+                    android:textColor="@color/fuzhu_red"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/general_item_youfanli"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tv_fanbi"
+                android:gravity="center"
+                android:text="有返利"
+                android:textColor="@color/all_pink"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/general_item_lijifan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="收货后立返"
+                android:textColor="@color/grey_text"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:id="@+id/rl_super_goods_fanbi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/super_tv_fanbi"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/size_2dp"
+                    android:layout_marginRight="@dimen/size_5dp"
+                    android:layout_marginTop="@dimen/size_2dp"
+                    android:background="@drawable/fan_bg"
+                    android:gravity="center"
+                    android:text="返比"
+                    android:textColor="@color/fuzhu_red"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/super_tv_fanbili"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/super_tv_fanbi"
+                    android:gravity="center_vertical"
+                    android:text="5%"
+                    android:textColor="@color/fuzhu_red"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/super_tv_xiaoliang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text="销量1230"
+                    android:textColor="@color/grey_text"
+                    android:textSize="12sp" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_general_goods_totianmao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!--android:drawableLeft="@mipmap/icon_tianmao"-->
+                <TextView
+                    android:id="@+id/general_item_quTianMao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_fanbi"
+                    android:gravity="center"
+                    android:text=" 去天猫"
+                    android:textColor="@color/grey_text"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/general_item_xiaoliang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text="销量1230"
+                    android:textColor="@color/grey_text"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/general_item_shopName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textColor="@color/grey_text"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/general_item_bottomAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="郑州"
+                android:textColor="@color/grey_text"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>

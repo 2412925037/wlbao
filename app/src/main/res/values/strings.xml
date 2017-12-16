@@ -1,0 +1,84 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">万利宝</string>
+
+    <!--个人中心-->
+    <string name="personal_center">个人中心</string>
+
+    <!--个人资料-->
+    <string name="personal_data">个人资料</string>
+    <string name="my_headportrait">我的头像</string>
+    <string name="update_password">修改登录密码</string>
+    <string name="update_phone">手机号码</string>
+    <string name="user_nickname">用户昵称</string>
+    <string name="clear_cache">清理缓存</string>
+    <string name="now_version">当前版本</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- 电商相关 -->
+    <string name="webview_test">WebView代理</string>
+    <string name="login_test">登录</string>
+    <string name="logout_test">退出登录</string>
+    <string name="transaction_test">电商交易</string>
+    <string name="mine_test">订单与购物车</string>
+    <string name="default_showurl">https://h5.m.taobao.com/awp/core/detail.htm?id=522166121586</string>
+    <string name="default_open">默认方式</string>
+    <string name="taobao_open">手淘</string>
+    <string name="tmall_open">天猫</string>
+    <string name="h5_open">H5</string>
+    <string name="open_type">打开方式:</string>
+    <string name="commodity_type">商品类型:</string>
+    <string name="common_commodity">普通商品</string>
+    <string name="taoke_commodity">淘客商品</string>
+    <string name="input_url">请输入URL:</string>
+    <string name="open_url">打开URL</string>
+    <string name="isconfuse">商品id是否混淆:</string>
+    <string name="notconfuse">不混淆</string>
+    <string name="confuse">混淆</string>
+    <string name="input_itemid">请输入商品id:</string>
+    <string name="itemid">522166121586</string>
+    <string name="open_item">打开商品详情页</string>
+    <string name="add_item_to_cart">添加商品到购物车</string>
+    <string name="input_shopid">请输入店铺id:</string>
+    <string name="shopid">60552065</string>
+    <string name="open_shop">打开店铺</string>
+    <string name="order_type">订单页面参数(仅在H5打开方式下有效):</string>
+    <string name="order_all">全部</string>
+    <string name="order_topay">待付款</string>
+    <string name="order_tosend">待发货</string>
+    <string name="order_toreceive">待收货</string>
+    <string name="order_tocomment">待评价</string>
+    <string name="show_order">分域显示我的订单</string>
+    <string name="show_allorder">全部显示我的订单</string>
+    <string name="show_cart">显示我的购物车</string>
+    <!--首页网格展示-->
+    <string name="grid_jhs">聚划算</string>
+    <string name="grid_te">天天特价</string>
+    <string name="grid_ai">淘宝返利</string>
+    <string name="grid_jd">京东返利</string>
+    <string name="grid_travel">阿里旅行</string>
+    <string name="grid_yhd">超市生鲜</string>
+    <string name="grid_mogujie">蘑菇街</string>
+    <string name="grid_vip">唯品会</string>
+    <string name="grid_guomei">国美在线</string>
+    <string name="grid_suning">苏宁易购</string>
+    <string name="grid_meilishuo">美丽说</string>
+
+    <!--淘宝网页加载-->
+    <string name="load_fail">加载失败，无法连接网络!</string>
+    <string name="reason_one">· 没有网络信号或者数据连接\n· 此网页可能暂时出现故障\n· 网址可能不正确</string>
+    <string name="loading">加载中...</string>
+    <string name="teststr">加载中</string>
+    <string name="logining">正在登陆...</string>
+    <string name="rebate_shop_tip1">淘宝/天猫商城:请在页面顶部万利宝搜索框或者点击淘宝LOGO,在"淘宝返利"页面搜索框输入您想购买的宝贝关键字,如裙子,女士衬衫.然后在搜索结果中找到您想要的宝贝,点击宝贝进入淘宝/天猫下单即可拿返利和补贴.万利宝系统已与淘宝系统对接,您搜索到的宝贝和淘宝商品同步,搜索结果与在手机淘宝搜索的结果基本一致。</string>
+    <string name="rabate_shop_tip2">注意，首次从万利宝去淘宝购物，订单需要认领一次。</string>
+    <string name="rebate_shop_tip3">温馨提示：从万利宝跳转到淘宝后，如还想浏览淘宝其它页面，请将宝贝加入购物车或者直接购买，否则，将会丢失万利宝跟踪码而照成您的购物拿不到返利及补贴！</string>
+    <string name="rebate_shop_tip4">万利宝其它合作商城如上图所示，请直接点击各商城图标，直接进入各商城购物拿返利，万利宝系统已与京东、蘑菇街，苏宁易购订单系统对接，下单后订单15分钟内可见，系统自动跟踪订单，无需认领，淘宝订单首次购物需要认领。</string>
+    <string name="grid_xinshou">新手上路</string>
+
+    <string name="bad_net">网络信号差，连接超时!</string>
+
+</resources>

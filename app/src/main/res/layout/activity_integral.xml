@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/comman_topbar"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/Integral_sum_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="全部"
+        android:textColor="@color/all_text_color"
+        android:textSize="16sp"
+        android:padding="16dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_40dp"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:id="@+id/btn_all"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="全部"
+            android:textColor="@color/all_text_color"
+            android:textSize="16sp"
+            android:background="@color/app_bg_color"/>
+
+
+        <TextView
+            android:id="@+id/btn_income"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="收入"
+            android:textColor="@color/all_text_color"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/btn_expend"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="支出"
+            android:textColor="@color/all_text_color"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
+        android:id="@+id/Integral_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <TextView
+        android:id="@+id/tv_duanwang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="断网了。。。。"
+        android:textColor="@color/all_text_color"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/founds_empty_view"
+        layout="@layout/layout_empty"
+        android:visibility="gone" />
+</LinearLayout>

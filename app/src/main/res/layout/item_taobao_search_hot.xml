@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_taobao_search_hot_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/size_10dp"
+    android:layout_marginRight="@dimen/size_10dp"
+    android:background="@drawable/shape_btn_grey_rectangle_5corner"
+    android:button="@null"
+    android:gravity="center"
+    android:paddingLeft="@dimen/size_5dp"
+    android:paddingRight="@dimen/size_5dp"
+    android:text="测试"
+    android:textColor="@color/grey_text" />

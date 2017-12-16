@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="1.5dp"
+    android:background="@color/colorWhite"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/size_10dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/img_my_bills_pic"
+            android:scaleType="centerCrop"
+            android:layout_width="@dimen/size_100dp"
+            android:layout_height="@dimen/size_100dp"
+            android:layout_marginRight="@dimen/size_5dp"
+            android:src="@mipmap/icon_wanlibao_grey" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/circular_masking"
+            android:contentDescription="@null" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/img_my_bills_pic"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_my_bills_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/all_text_color"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="订单编号："
+                    android:textColor="@color/all_text_color" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="13435346"
+                    android:textColor="@color/grey_text" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="订单付款"
+                    android:textColor="@color/red_text" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="下单日期："
+                    android:textColor="@color/all_text_color" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_date"
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="134353465344"
+                    android:textColor="@color/grey_text" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv_my_bills_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="订单付款"
+                    android:textColor="@color/grey_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="商品数量："
+                    android:textColor="@color/all_text_color" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_number"
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="134"
+                    android:textColor="@color/grey_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="付款金额："
+                    android:textColor="@color/red_text" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_paycost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="58.00元"
+                    android:textColor="@color/red_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="返利金额："
+                    android:textColor="@color/all_text_color" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_backmoney"
+                    android:layout_width="@dimen/size_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="3.25"
+                    android:textColor="@color/grey_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/all_text_color" />
+
+                <TextView
+                    android:id="@+id/tv_my_bills_paybyseller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00"
+                    android:textColor="@color/grey_text" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_5dp"
+        android:layout_marginTop="@dimen/size_15dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_my_bills_item_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="购买商城："
+           />
+
+        <ImageView
+            android:id="@+id/img_my_bills_shop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/tv_my_bills_item_shop"
+            android:src="@mipmap/icon_tianmao" />
+
+        <TextView
+            android:id="@+id/tv_my_bills_watch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_btn_red_halfcircle"
+            android:paddingBottom="@dimen/size_3dp"
+            android:paddingLeft="@dimen/size_10dp"
+            android:paddingRight="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_3dp"
+            android:textSize="@dimen/second_textsize"
+            android:text="查看订单"
+            android:textColor="@color/colorWhite" />
+    </RelativeLayout>
+</LinearLayout>

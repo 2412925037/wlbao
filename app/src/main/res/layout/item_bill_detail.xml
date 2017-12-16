@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_bill_detail_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_10dp"
+        android:layout_marginRight="@dimen/size_15dp"
+        android:layout_marginTop="@dimen/size_10dp"
+        android:layout_marginBottom="@dimen/size_5dp"
+        android:text="测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试"
+        android:textColor="@color/all_text_color"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textSize="@dimen/second_textsize" />
+
+    <LinearLayout
+        android:paddingTop="@dimen/size_5dp"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="商品编号："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_id"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/all_text_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+
+    <LinearLayout
+        android:paddingTop="@dimen/size_5dp"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返利比例："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_returns_rate"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/all_text_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+
+    <LinearLayout
+        android:paddingTop="@dimen/size_5dp"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="挂牌金额："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_marked_price"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/red_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+
+    <LinearLayout
+        android:paddingTop="@dimen/size_5dp"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="结算价格："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/red_text" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+
+    <LinearLayout
+        android:paddingTop="@dimen/size_5dp"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="商品数量："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_cnt"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/all_text_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:paddingTop="@dimen/size_5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="商品金额："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/red_text" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+
+    <LinearLayout
+        android:paddingTop="@dimen/size_5dp"
+        android:paddingBottom="@dimen/size_5dp"
+        android:paddingLeft="@dimen/size_10dp"
+        android:paddingRight="@dimen/size_10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="返利金额："
+            android:textSize="@dimen/second_textsize" />
+
+        <TextView
+            android:id="@+id/tv_bill_detail_returns"
+            android:gravity="right"
+            android:text="1332233"
+            android:textColor="@color/red_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <View
+        android:background="@color/line_gray"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"/>
+</LinearLayout>
