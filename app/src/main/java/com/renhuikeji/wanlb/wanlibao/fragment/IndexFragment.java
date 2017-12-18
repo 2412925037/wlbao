@@ -48,6 +48,7 @@ import com.renhuikeji.wanlb.wanlibao.bean.HomeRecyBean;
 import com.renhuikeji.wanlb.wanlibao.bean.IndexGoodBean;
 import com.renhuikeji.wanlb.wanlibao.bean.MallListBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
+import com.renhuikeji.wanlb.wanlibao.config.Contants;
 import com.renhuikeji.wanlb.wanlibao.utils.AliUtils.AliUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.CheckUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;

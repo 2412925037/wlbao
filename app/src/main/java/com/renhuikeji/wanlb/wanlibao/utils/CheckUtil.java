@@ -21,6 +21,8 @@ public class CheckUtil {
         if (!TextUtils.isEmpty(str_uid) && !TextUtils.isEmpty(str_phone)) {
             return true;
         }
+
+//
         return false;
     }
 

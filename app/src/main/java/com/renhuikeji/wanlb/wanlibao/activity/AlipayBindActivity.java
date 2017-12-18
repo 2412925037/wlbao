@@ -19,6 +19,7 @@ import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.DialogUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.NetworkManageUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.OkHttpUtils;
+import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.StringUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
@@ -157,7 +158,7 @@ public class AlipayBindActivity extends AppCompatActivity {
     }
 
     private String access_code;
-    private void requestRegist(String phone, String yzm) {
+    private void requestRegist(final String phone, String yzm) {
         //DialogUtils.showProgressDlg(AlipayBindActivity.this, getString(R.string.loading));
 
         String url = Contants.ALIPAY_BIND + "&mobile="+phone+"&access_token="+access_code+"&yan="+yzm+"&user_id="+user_id;
@@ -185,7 +186,7 @@ public class AlipayBindActivity extends AppCompatActivity {
                     if(TextUtils.equals("BIND_SUCESS",result)){
                         ToastUtil.getInstance().showToast("绑定成功");
 
-
+                        SPUtils.put(AlipayBindActivity.this,Constant.User_Phone, phone);
                         setResult(RESULT_OK);
                         finish();
                     }

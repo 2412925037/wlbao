@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.hyphenate.chat.ChatClient;
 import com.hyphenate.helpdesk.callback.Callback;
 import com.hyphenate.helpdesk.easeui.util.IntentBuilder;
+import com.orhanobut.logger.Logger;
 import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.activity.CashFlowActivity;
@@ -275,9 +276,12 @@ public class MyFragment extends Fragment {
                 + "id,money,nick,vip,salesman,headimgurl,subscribe_yasbao,openid_yasbao,level,mobile,recommender,returns,income";
         //判断网络
         if (NetworkManageUtil.checkNetworkAvailable(getActivity())) {
-            new OkHttpUtils().getDatas(getActivity(),url, msession, new OkHttpUtils.HttpCallBack() {
+            OkHttpUtils.getInstance().getDatas(getActivity(),url, msession, new OkHttpUtils.HttpCallBack() {
                 @Override
                 public void onSusscess(String data) {
+
+                    Logger.i(data);
+
                     MemberInfoBean bean = new Gson().fromJson(data, MemberInfoBean.class);
                     if (TextUtils.equals("SUCESS", bean.getResult())) {
                         MemberInfoBean.UserinfoBean userinfo = bean.getUserinfo();

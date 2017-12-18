@@ -317,6 +317,7 @@ public class OkHttpUtils {
                 if (response.isSuccessful()) {
                     String res=response.body().string().trim();
 
+                    Log.i("tag","url:"+url+" "+res);
                     BaseBean  resBean = new Gson().fromJson(res, BaseBean.class);
 //                    如果session过期,去更新session
                     if(TextUtils.equals("NOLOGIN",resBean.getResult())){

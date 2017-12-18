@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import com.bumptech.glide.Glide;
 import com.hyphenate.chat.ChatManager;
 import com.renhuikeji.wanlb.wanlibao.App;
+import com.renhuikeji.wanlb.wanlibao.AppManager;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.DialogManager;
@@ -80,7 +81,7 @@ public class BaseActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(Constant.RECEIVER_DIALOG);
         IntentFilter filter1 = new IntentFilter(Constant.QIANDAO);
         registerReceiver(dialogReceiver, filter);
-        //AppManager.getAppManager().addActivity(this);
+        AppManager.getAppManager().addActivity(this);
         this.context = this;
 
 
@@ -91,7 +92,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //app.bindActivity(this);
+        app.bindActivity(this);
         isMainDisplay= isTopActivity("com.renhuikeji.wanlb.wanlibao","com.renhuikeji.wanlb.wanlibao.activity.MainActivity",this);
         SPUtils.put(this,Constant.MAIN_DISPLAY,isMainDisplay);
 //        initHuanXinListener();
@@ -133,7 +134,7 @@ public class BaseActivity extends AppCompatActivity {
         if (dialogReceiver != null) {
             unregisterReceiver(dialogReceiver);
         }
-        //invokeGc();
+        invokeGc();
        /* if(HxListener!=null){
             ChatClient.getInstance().getChat().removeMessageListener(HxListener);
         }*/
