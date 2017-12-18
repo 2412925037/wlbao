@@ -66,7 +66,7 @@
         </activity>
         <activity android:name=".activity.GuideActivity" />
         <activity
-            android:name=".activity.MainActivity" />
+            android:name=".activity.MainActivity" android:launchMode="singleTask"/>
         <!-- <activity android:name=".activity.MainActivity"/> -->
         <activity android:name=".activity.BaseActivity" />
         <activity android:name=".activity.LoginActivity" />
@@ -215,20 +215,19 @@
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!--支付宝-->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name="com.alipay.sdk.app.H5AuthActivity"
-            android:configChanges="orientation|keyboardHidden"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+
+
         <activity android:name=".activity.AlipayBindActivity" />
     </application>
 

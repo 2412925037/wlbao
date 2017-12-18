@@ -37,7 +37,6 @@ import butterknife.OnClick;
 
 public class AlipayBindActivity extends AppCompatActivity {
 
-
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.et_phone)
@@ -70,7 +69,6 @@ public class AlipayBindActivity extends AppCompatActivity {
 
                 checkPersonalData();
 
-
                 break;
         }
     }
@@ -91,7 +89,7 @@ public class AlipayBindActivity extends AppCompatActivity {
         String baseUrl = ConfigValue.APP_IP;
         String apikey = ConfigValue.API_KEY;
         String url = baseUrl + "?api=yasbao.api.user.getcode&uid=&apiKey=" + apikey + "&mobile=" + phone;
-        new OkHttpUtils().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
+        OkHttpUtils.getInstance().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
 
@@ -171,7 +169,8 @@ public class AlipayBindActivity extends AppCompatActivity {
         }
 
         final String finalUrl = url;
-        new OkHttpUtils().getJson(url, new OkHttpUtils.HttpCallBack() {
+
+        OkHttpUtils.getInstance().getJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
                 Log.i("tag","url"+ finalUrl +" result:"+data);
@@ -185,6 +184,8 @@ public class AlipayBindActivity extends AppCompatActivity {
                     String result = object.getString("result");
                     if(TextUtils.equals("BIND_SUCESS",result)){
                         ToastUtil.getInstance().showToast("绑定成功");
+
+
                         setResult(RESULT_OK);
                         finish();
                     }

@@ -36,6 +36,7 @@ import static com.renhuikeji.wanlb.wanlibao.utils.ActivityUtils.isTopActivity;
 
 /**
  * Created by Administrator on 2017/4/19.
+ *
  */
 
 public class App extends Application {

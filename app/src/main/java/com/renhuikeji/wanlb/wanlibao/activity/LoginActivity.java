@@ -183,7 +183,7 @@ public class LoginActivity extends BaseActivity {
                         Log.i("tag", OkHttpUtils.decodeUnicode(data));
                         try {
                             JSONObject object = new JSONObject(data);
-                            String sign = object.getString("signStr");
+                            String sign = object.getString("sign");
                             String target_id = object.getString("target_id");
 
                             Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, false);
@@ -235,92 +235,80 @@ public class LoginActivity extends BaseActivity {
     private static final int SDK_AUTH_FLAG = 2;
     String authcode;
 
-
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
 
-                switch (msg.what) {
+            switch (msg.what) {
 
-                    case SDK_AUTH_FLAG:
+                case SDK_AUTH_FLAG:
 
-                        AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
-                        final String resultStatus = authResult.getResultStatus();
+                    AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
+                    final String resultStatus = authResult.getResultStatus();
 
-                        // 判断resultStatus 为“9000”且result_code
-                        // 为“200”则代表授权成功，具体状态码代表含义可参考授权接口文档
-                        if (TextUtils.equals(resultStatus, "9000") && TextUtils.equals(authResult.getResultCode(), "200")) {
-                            // 获取alipay_open_id，调支付时作为参数extern_token 的value
-                            // 传入，则支付账户为该授权账户
+                    Log.i("tag",resultStatus);
+                    // 判断resultStatus 为“9000”且result_code
+                    // 为“200”则代表授权成功，具体状态码代表含义可参考授权接口文档
+                    if (TextUtils.equals(resultStatus, "9000") && TextUtils.equals(authResult.getResultCode(), "200")) {
+                        // 获取alipay_open_id，调支付时作为参数extern_token 的value
+                        // 传入，则支付账户为该授权账户
 
-                            authcode = authResult.getAuthCode();
-                            Log.i("logauthcode",authcode);
+                        authcode = authResult.getAuthCode();
+                        Log.i("logauthcode", authcode);
 
-                            OkHttpUtils.getInstance().getJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
-                                @Override
-                                public void onSusscess(String data) {
-                                    // DialogUtils.stopProgressDlg();
-                                    Log.i("taghandler", OkHttpUtils.decodeUnicode(data));
+                        OkHttpUtils.getInstance().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
+                            @Override
+                            public void onSusscess(String data) {
 
-                                    AlipayLoginBean bean = new Gson().fromJson(data, AlipayLoginBean.class);
-                                    Log.i("tag","user"+bean.getUid());
-                                    Log.i("tag","session"+session);
+                                Log.i("tag",data);
+                                String[] str = data.split("@");
+                                if (str.length > 1) {
+                                    AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
+                                    session = str[1];
+                                    SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
 
-//                                    String[] str = data.split("@");
-//                                    //SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-//                                    if (str.length > 1) {
-//                                        AlipayLoginBean bean = new Gson().fromJson(data, AlipayLoginBean.class);
-//                                        session = str[1];
-//                                        SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-//
-//                                        Log.i("tag","user"+bean.getUid());
-//                                        Log.i("tag","session"+session);
-//                                        if (TextUtils.equals("NOBIND", bean.getResult())) {
-//                                            //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
-//                                            startActivityForResult(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()), 101);
-//
-//                                        } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
-//
-//                                            Log.i("tag","user"+bean.getUid());
-//                                            Log.i("tag","session"+session);
-//
-////                                            Log.i("tag1","startactivity");
-////                                            SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-////                                            SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
-////                                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-////                                            //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-////                                            startActivity(i);
-////                                            finish();
-//                                        } else {
-//                                            ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
-//                                        }
+                                    Log.i("tag", "user" + bean.getUid()+"--"+session);
+
+                                    if (TextUtils.equals("NOBIND", bean.getResult())) {
+                                        //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
+                                        startActivityForResult(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()), 101);
+
+                                    } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
+
+                                        SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
+                                        SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
+                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(i);
+                                        finish();
+                                    } else {
+                                        ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
                                     }
-
-                                //}
-
-                                @Override
-                                public void onError(String meg) {
-                                    super.onError(meg);
-                                    // DialogUtils.stopProgressDlg();
-                                    Log.i("tagerr", OkHttpUtils.decodeUnicode(meg));
-                                    ToastUtils.toastForShort(LoginActivity.this, "登录出错");
                                 }
-                            });
 
-                                                    Toast.makeText(LoginActivity.this,
-                                                            "授权成功\n" + String.format("authCode:%s", authResult.getAuthCode()), Toast.LENGTH_SHORT)
-                                                            .show();
-                        } else {
-                            // 其他状态值则为授权失败
-                            Toast.makeText(LoginActivity.this,
-                                    "授权失败" + String.format("authCode:%s", authResult.getAuthCode()), Toast.LENGTH_SHORT).show();
+                            }
 
-                        }
-                        break;
+                            @Override
+                            public void onError(String meg) {
+                                super.onError(meg);
+                                ToastUtils.toastForShort(LoginActivity.this, "登录出错");
+                            }
+                        });
 
-                    default:
-                        break;
-                }
+                        Toast.makeText(LoginActivity.this,
+                                "授权成功\n" + String.format("authCode:%s", authResult.getAuthCode()), Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        // 其他状态值则为授权失败
+                        Toast.makeText(LoginActivity.this,
+                                "授权失败" + String.format("authCode:%s", authResult.getAuthCode()), Toast.LENGTH_SHORT).show();
+
+                    }
+                    break;
+
+                default:
+                    break;
+            }
         }
 
     };
@@ -329,105 +317,54 @@ public class LoginActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (requestCode == 101 && resultCode == RESULT_OK) {
-//
-//            if (authcode == null) {
-//                ToastUtil.getInstance().showToast("xxx");
-//                return;
-//            }
-//
-//
-//            new OkHttpUtils().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
-//                @Override
-//                public void onSusscess(String data) {
-//                    // DialogUtils.stopProgressDlg();
-//                    Log.i("tag", OkHttpUtils.decodeUnicode(data));
-//                    String[] str = data.split("@");
-//                    if (str.length > 1) {
-//                        AlipayLoginBean bean = new Gson().fromJson(data, AlipayLoginBean.class);
-//                        session = str[1];
-//                        //SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-//                        if (TextUtils.equals("NOBIND", bean.getResult())) {
-//                            //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
-//                            startActivityForResult(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()), 101);
-//
-//                        } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
-//
-//                            Log.i("tag","user"+bean.getUid());
-//                            Log.i("tag","session"+session);
-//
-//                            Log.i("tag1","startactivity");
-//                            //                                            SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-//                            //                                            SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
-//                            //                                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//                            //                                            //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            //                                            startActivity(i);
-//                            //                                            finish();
-//                        } else {
-//                            ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onError(String meg) {
-//                    super.onError(meg);
-//                    // DialogUtils.stopProgressDlg();
-//                    Log.i("tagerr", OkHttpUtils.decodeUnicode(meg));
-//                    ToastUtils.toastForShort(LoginActivity.this, "登录出错");
-//                }
-//            });
-//
-//
-//            new OkHttpUtils().getJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
-//                @Override
-//                public void onSusscess(String data) {
-//
-//                    Log.i("taag", OkHttpUtils.decodeUnicode(data));
-//
-//                                /*{
-//    "user_id": "2088712912254324",
-//    "access_token": "kuaijieBad8d890952a74a41ba8ea3aeb5c2aE32",
-//    "result": "NOBIND",
-//    "worngMsg": "该用户没有绑定支付宝，请绑定！"
-//}*/
-//
-//                    AlipayLoginBean bean = new Gson().fromJson(data, AlipayLoginBean.class);
-//                    String result = bean.getResult();
-//
-//                    if (TextUtils.equals("NOBIND", result)) {
-//                        ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
-//                        startActivityForResult(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()), 101);
-//
-//                    } else if (TextUtils.equals("LOGIN_SUCESS", result)) {
-//
-//                        ToastUtil.getInstance().showToast("登录成功");
-//                        SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
-//                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(i);
-//
-//                    } else {
-//                        ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(String meg) {
-//                    super.onError(meg);
-//                    Log.i("tag", OkHttpUtils.decodeUnicode(meg));
-//                }
-//            });
-//
-//        }
+        if (requestCode == 101 && resultCode == RESULT_OK) {
+
+            if (authcode == null) {
+                ToastUtil.getInstance().showToast("xxx");
+                return;
+            }
+
+            new OkHttpUtils().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
+                @Override
+                public void onSusscess(String data) {
+                    // DialogUtils.stopProgressDlg();
+                    Log.i("tag", OkHttpUtils.decodeUnicode(data));
+                    String[] str = data.split("@");
+                    if (str.length > 1) {
+                        AlipayLoginBean bean = new Gson().fromJson(data, AlipayLoginBean.class);
+                        session = str[1];
+                        if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
+
+                            SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
+                            SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onError(String meg) {
+                    super.onError(meg);
+                    // DialogUtils.stopProgressDlg();
+                    Log.i("tagerr", OkHttpUtils.decodeUnicode(meg));
+                    ToastUtils.toastForShort(LoginActivity.this, "登录出错");
+                }
+            });
+
+        }
 
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //getApp().finishAllActivity();
+        getApp().finishAllActivity();
     }
 
     private String APP_ID = "wxf75d50c809f568e7";
