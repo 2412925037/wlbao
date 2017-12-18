@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.AuthTask;
 import com.google.gson.Gson;
+import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.alipay.AuthResult;
 import com.renhuikeji.wanlb.wanlibao.alipay.OrderInfoUtil2_0;
@@ -111,7 +112,6 @@ public class LoginActivity extends BaseActivity {
             public void onSusscess(String data) {
                 // DialogUtils.stopProgressDlg();
 
-                Log.i("tag",data);
                 String[] str = data.split("@");
                 if (str.length > 1) {
                     LoginCodeBean res = new Gson().fromJson(str[0], LoginCodeBean.class);
@@ -233,7 +233,7 @@ public class LoginActivity extends BaseActivity {
 
     private static final int SDK_PAY_FLAG = 1;
     private static final int SDK_AUTH_FLAG = 2;
-    String authcode;
+    private String authcode;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -246,7 +246,6 @@ public class LoginActivity extends BaseActivity {
                     AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
                     final String resultStatus = authResult.getResultStatus();
 
-                    Log.i("tag",resultStatus);
                     // 判断resultStatus 为“9000”且result_code
                     // 为“200”则代表授权成功，具体状态码代表含义可参考授权接口文档
                     if (TextUtils.equals(resultStatus, "9000") && TextUtils.equals(authResult.getResultCode(), "200")) {
@@ -260,7 +259,7 @@ public class LoginActivity extends BaseActivity {
                             @Override
                             public void onSusscess(String data) {
 
-                                Log.i("tag",data);
+                                Log.i("tag",OkHttpUtils.decodeUnicode(data));
                                 String[] str = data.split("@");
                                 if (str.length > 1) {
                                     AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
@@ -315,78 +314,22 @@ public class LoginActivity extends BaseActivity {
 
     };
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == 101 && resultCode == RESULT_OK) {
-//
-//            if (authcode == null) {
-//                ToastUtil.getInstance().showToast("xxx");
-//                return;
-//            }
-//
-//            new OkHttpUtils().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
-//                @Override
-//                public void onSusscess(String data) {
-//                    // DialogUtils.stopProgressDlg();
-//                    Log.i("tag", OkHttpUtils.decodeUnicode(data));
-//                    String[] str = data.split("@");
-//                    if (str.length > 1) {
-//                        AlipayLoginBean bean = new Gson().fromJson(data, AlipayLoginBean.class);
-//                        session = str[1];
-//                        if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
-//
-//                            SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-//                            SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
-//                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(i);
-//                            finish();
-//                        } else {
-//                            ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onError(String meg) {
-//                    super.onError(meg);
-//                    // DialogUtils.stopProgressDlg();
-//                    Log.i("tagerr", OkHttpUtils.decodeUnicode(meg));
-//                    ToastUtils.toastForShort(LoginActivity.this, "登录出错");
-//                }
-//            });
-//
-//        }
-//
-//    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         getApp().finishAllActivity();
     }
 
-    private String APP_ID = "wxf75d50c809f568e7";
-    private IWXAPI api;
-
-    private void regToWx() {
-        api = WXAPIFactory.createWXAPI(this, APP_ID, false);
-        api.registerApp(APP_ID);
-    }
 
     /**
      * 微信登录
      */
     private void setWXLogin() {
-        regToWx();
-        if (api.isWXAppInstalled()) {
+        if (App.api.isWXAppInstalled()) {
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             req.state = "wlbao_login";
-            api.sendReq(req);
+            App.api.sendReq(req);
             finish();
         } else
             Toast.makeText(LoginActivity.this, "用户未安装微信", Toast.LENGTH_SHORT).show();

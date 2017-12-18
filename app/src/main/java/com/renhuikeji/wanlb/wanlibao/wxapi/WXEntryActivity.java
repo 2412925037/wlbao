@@ -1,14 +1,26 @@
 package com.renhuikeji.wanlb.wanlibao.wxapi;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.renhuikeji.wanlb.wanlibao.App;
+import com.renhuikeji.wanlb.wanlibao.activity.AlipayBindActivity;
+import com.renhuikeji.wanlb.wanlibao.activity.MainActivity;
+import com.renhuikeji.wanlb.wanlibao.activity.WechatBindActivity;
+import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginBean;
+import com.renhuikeji.wanlb.wanlibao.bean.WechatBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
+import com.renhuikeji.wanlb.wanlibao.config.Contants;
+import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.LogUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.OkHttpUtils;
+import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
+import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -21,8 +33,8 @@ import org.json.JSONObject;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
-    private String APP_ID = "wxe67cf29ce9d34600";
-    private String APP_SECRET = "f94840b1da52dece67a59d01c5415725";
+    private String APP_ID = "wx33c86a95584f8c11";
+    private String APP_SECRET = "60f0d8ec297696947ef0a8ec33ba6b93";
 
     private static final String TAG = "WXEntryActivity";
     private static final int RETURN_MSG_TYPE_LOGIN = 1; //登录
@@ -32,9 +44,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("tag","分享");
         boolean handl = App.api.handleIntent(getIntent(), this);
-        Log.i("tag","123"+handl);
         if (!handl) {
             finish();
         }
@@ -49,6 +59,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     public void onReq(BaseReq baseReq) {
 
     }
+
+    private String session;
 
     // 第三方应用发送到微信的请求处理后的响应结果，会回调到该方法
     //app发送消息给微信，处理返回消息的回调
@@ -79,19 +91,58 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 if (type == RETURN_MSG_TYPE_LOGIN) {
                     //用户换取access_token的code，仅在ErrCode为0时有效
                     String code = ((SendAuth.Resp) baseResp).code;
-                    LogUtil.i(TAG, "code:------>" + code);
+
+                    OkHttpUtils.getInstance().getYzmJson(Contants.WECHAT_LOGIN + "&code=" + code, new OkHttpUtils.HttpCallBack() {
+                        @Override
+                        public void onSusscess(String data) {
+
+                            Log.i("tagwechat",OkHttpUtils.decodeUnicode(data));
+                            String[] str = data.split("@");
+                            if (str.length > 1) {
+                                WechatBean bean = new Gson().fromJson(str[0], WechatBean.class);
+                                session = str[1];
+                                SPUtils.put(WXEntryActivity.this, Constant.MSESSION, session);
+
+                                if (TextUtils.equals("NOBIND", bean.getResult())) {
+                                    startActivity(new Intent(WXEntryActivity.this, WechatBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("openid",bean.getOpenid()));
+
+                                } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
+
+                                    SPUtils.put(WXEntryActivity.this, Constant.MSESSION, session);
+                                    SPUtils.put(WXEntryActivity.this, Constant.User_Uid, bean.getUid().trim());
+                                    SPUtils.put(WXEntryActivity.this, Constant.User_Phone, bean.getUsername());
+                                    SPUtils.put(WXEntryActivity.this, Constant.User_Psw, bean.getPassword());
+                                    Intent i = new Intent(WXEntryActivity.this, MainActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                    finish();
+                                } else {
+                                    ToastUtils.toastForShort(WXEntryActivity.this, bean.getWorngMsg());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onError(String meg) {
+                            super.onError(meg);
+                            Log.i("tag",OkHttpUtils.decodeUnicode(meg));
+                        }
+                    });
+
+
+                    //LogUtil.i(TAG, "code:------>" + code);
 
                     //这里拿到了这个code，去做2次网络请求获取access_token和用户个人信息
-                    getAppToken(code);
+                    //getAppToken(code);
 
                 } else if (type == RETURN_MSG_TYPE_SHARE) {
                     ToastUtil.getInstance().showToast("微信分享成功");
                     finish();
                 }
                 break;
-//            default:
-//                finish();
-               // break;
+            default:
+                finish();
+                break;
         }
 
     }
@@ -137,7 +188,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
      * @param openid
      */
     private void getUserMsg(String access_token, final String openid) {
-        String path = "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid;
         String url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid;
 
         new OkHttpUtils().getJson(url, new OkHttpUtils.HttpCallBack() {
@@ -146,7 +196,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
                 {
                     LogUtil.i("tag", result);
-                    JSONObject jsonObject = null;
+                    JSONObject jsonObject;
                     String name = null;
                     String icon = null;
                     try {

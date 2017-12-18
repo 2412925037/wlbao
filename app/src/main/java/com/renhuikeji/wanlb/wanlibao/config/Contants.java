@@ -35,4 +35,10 @@ public class Contants {
 
     //支付宝提现
     public static final String ALIPAY_WITHDRAW = APP_IP + "?api=yasbao.api.account.withdrawtoalipay&apiKey="+API_KEY;
+
+    //微信登录
+    public static final String WECHAT_LOGIN = APP_IP + "?api=yasbao.api.weixin.weixinlogin&apiKey=" + API_KEY;
+
+    //微信绑定
+    public static final String WECHAT_BIND = APP_IP + "?api=yasbao.api.weixin.weixinbind&apiKey="+API_KEY;
 }

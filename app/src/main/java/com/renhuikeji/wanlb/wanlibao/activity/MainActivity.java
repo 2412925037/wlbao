@@ -332,7 +332,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     //登录须重写onActivityResult方法
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("tag","fasdf");
         super.onActivityResult(requestCode,resultCode,data);
         CallbackContext.onActivityResult(requestCode, resultCode, data);
     }

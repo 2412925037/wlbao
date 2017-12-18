@@ -148,8 +148,8 @@ public class OkHttpUtils {
      * @param url
      * @param callBack
      */
-    public void getJson(String url, final HttpCallBack callBack) {
-        Request request = new Request.Builder().url(url).build();
+    public void getJson(final String url, final HttpCallBack callBack) {
+        final Request request = new Request.Builder().url(url).build();
         OnStart(callBack);
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -160,10 +160,12 @@ public class OkHttpUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
 
+                String result = response.body().string();
+                Log.i("tag","url:"+url+" "+decodeUnicode(result));
                 if (response.isSuccessful()) {
-                    onSuccess(callBack, response.body().string());
+                    onSuccess(callBack, result);
                 } else {
-                    OnError(callBack, "error:"+ response.body().string());
+                    OnError(callBack, "error:"+ result);
                 }
             }
         });
@@ -241,7 +243,7 @@ public class OkHttpUtils {
      * @param url
      * @param callBack
      */
-    public void getYzmJson(String url, final HttpCallBack callBack) {
+    public void getYzmJson(final String url, final HttpCallBack callBack) {
         Request request = new Request.Builder().url(url).build();
         OnStart(callBack);
         client.newCall(request).enqueue(new Callback() {
@@ -252,13 +254,16 @@ public class OkHttpUtils {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
+                String result = response.body().string();
+                Log.i("tagYzmJso","url:"+url+" "+decodeUnicode(result));
                 if (response.isSuccessful()) {
                     //获取session的操作，session放在cookie头，且取出后含有“；”，取出后为下面的 s （也就是jsesseionid）
                     Headers headers = response.headers();
                     List<String> cookies = headers.values("Set-Cookie");
                     String session = cookies.get(0);
                     String s = session.substring(0, session.indexOf(";"));
-                    onSuccess(callBack, response.body().string() + "@" + s);
+                    onSuccess(callBack, result + "@" + s);
                 } else {
                     OnError(callBack, response.message());
                 }
@@ -314,10 +319,10 @@ public class OkHttpUtils {
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String res=response.body().string().trim();
 
-                    Log.i("tag","url:"+url+" "+res);
+                String res=response.body().string().trim();
+                Log.i("tag","url:"+url+" "+decodeUnicode(res));
+                if (response.isSuccessful()) {
                     BaseBean  resBean = new Gson().fromJson(res, BaseBean.class);
 //                    如果session过期,去更新session
                     if(TextUtils.equals("NOLOGIN",resBean.getResult())){
@@ -372,8 +377,6 @@ public class OkHttpUtils {
         //开始
         public void onstart() {
         }
-
-        ;
 
         //成功回调
         public abstract void onSusscess(String data);

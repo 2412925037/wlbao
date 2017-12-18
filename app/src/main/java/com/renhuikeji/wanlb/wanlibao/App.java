@@ -50,10 +50,10 @@ public class App extends Application {
     private String receId;
 
     public static IWXAPI api;
-    public static final String APP_ID = "wxf75d50c809f568e7";
+    public static final String APP_ID = "wx33c86a95584f8c11";
 
     private void regToWx() {
-        api = WXAPIFactory.createWXAPI(this, APP_ID, false);
+        api = WXAPIFactory.createWXAPI(this, APP_ID, true);
         api.registerApp(APP_ID);
     }
 
