@@ -360,9 +360,11 @@ public class GeneralGoodsActivity extends BaseActivity {
         recyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mCurrentCounter = 0;
+                //mCurrentCounter = 0;
+                page = 1;
                 adapter.clear();
-                requestData();
+                getData();
+                //requestData();
             }
         });
         //设置上拉加载更多
