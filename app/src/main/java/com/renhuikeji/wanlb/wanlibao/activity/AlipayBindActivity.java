@@ -1,5 +1,6 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -183,12 +184,20 @@ public class AlipayBindActivity extends AppCompatActivity {
                 try {
                     JSONObject object = new JSONObject(data);
                     String result = object.getString("result");
+                    String mobile = object.getString("username");
+                    String password = object.getString("password");
                     if(TextUtils.equals("BIND_SUCESS",result)){
                         ToastUtil.getInstance().showToast("绑定成功");
 
-                        SPUtils.put(AlipayBindActivity.this,Constant.User_Phone, phone);
-                        setResult(RESULT_OK);
+                        SPUtils.put(AlipayBindActivity.this,Constant.User_Phone, mobile);
+                        SPUtils.put(AlipayBindActivity.this,Constant.User_Psw, password);
+
+                        Intent i = new Intent(AlipayBindActivity.this, MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
                         finish();
+//                        setResult(RESULT_OK);
+//                        finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
