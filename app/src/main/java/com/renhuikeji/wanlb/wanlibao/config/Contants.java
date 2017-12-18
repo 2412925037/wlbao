@@ -32,4 +32,7 @@ public class Contants {
 
     //支付宝绑定  yasbao.api.user.alipaybind
     public static final String ALIPAY_BIND = APP_IP + "?api=yasbao.api.alipay.alipaybind&apiKey=" + API_KEY;
+
+    //支付宝提现
+    public static final String ALIPAY_WITHDRAW = APP_IP + "?api=yasbao.api.account.withdrawtoalipay&apiKey="+API_KEY;
 }

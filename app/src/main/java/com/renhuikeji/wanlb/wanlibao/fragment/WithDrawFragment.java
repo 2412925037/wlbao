@@ -1,5 +1,6 @@
 package com.renhuikeji.wanlb.wanlibao.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.renhuikeji.wanlb.wanlibao.activity.MainActivity;
 import com.renhuikeji.wanlb.wanlibao.bean.MemberInfoBean;
 import com.renhuikeji.wanlb.wanlibao.bean.WeChatCrashBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
+import com.renhuikeji.wanlb.wanlibao.config.Contants;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.DialogUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.KeyBoardUtils;
@@ -67,6 +69,7 @@ public class WithDrawFragment extends Fragment {
     private Handler mHandler = null;
 
     private MainActivity context ;
+    @SuppressLint("HandlerLeak")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -157,7 +160,7 @@ public class WithDrawFragment extends Fragment {
     }
 
 
-    @OnClick({R.id.img_wechat_cash_back, R.id.tv_wechat_cash_confirm})
+    @OnClick({R.id.img_wechat_cash_back, R.id.tv_wechat_cash_confirm,R.id.tv_alipay_cash_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_wechat_cash_back:
@@ -170,6 +173,12 @@ public class WithDrawFragment extends Fragment {
                         beginTransfer(msession);
                     }
                 }
+                break;
+            case R.id.tv_alipay_cash_confirm:
+                    String msession = (String) SPUtils.get(context, Constant.MSESSION, "");
+                    if (!TextUtils.isEmpty(msession)) {
+                        beginWithDraw(msession);
+                    }
                 break;
         }
     }
@@ -236,4 +245,47 @@ public class WithDrawFragment extends Fragment {
         });
     }
     //----------------------------------------------------
+
+
+
+    /**
+     * 开始转账 - 支付宝
+     */
+    private void beginWithDraw(final String msession) {
+        //关闭软键盘
+        KeyBoardUtils.closeKeybord(edit_cashMoney, context);
+        DialogUtils.showProgressDlg(context, "正在提现，请勿操作");
+        String money = edit_cashMoney.getText().toString().trim();
+        final String str_url = Contants.ALIPAY_WITHDRAW + "&uid=" + suid + "&money=" + money;
+        OkHttpUtils.getInstance().getDatas(context,str_url, msession, new OkHttpUtils.HttpCallBack() {
+            @Override
+            public void onSusscess(String data) {
+
+                DialogUtils.stopProgressDlg();
+                WeChatCrashBean bean = gson.fromJson(data, WeChatCrashBean.class);
+                if (TextUtils.equals("WRONG", bean.getResult())) {
+                    ToastUtils.toastForShort(context, bean.getWorngMsg());
+                } else {
+                    ToastUtils.toastForShort(context, "提现成功");
+                    //发送广播提示修改账户余额
+                    Intent intent = new Intent("refreshmoney");
+                    intent.putExtra("result", "1");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+
+                    //提现成功后刷新一下余额显示
+                    Message message = mHandler.obtainMessage();
+                    message.what = 3;
+                    mHandler.sendMessage(message);
+                    // finish();
+                }
+            }
+
+            @Override
+            public void onError(String meg) {
+                super.onError(meg);
+                DialogUtils.stopProgressDlg();
+                ToastUtils.toastForShort(context, getResources().getString(R.string.bad_net));
+            }
+        });
+    }
 }
