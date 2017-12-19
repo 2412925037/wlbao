@@ -182,6 +182,7 @@ public class WechatBindActivity extends AppCompatActivity {
                     String result = object.getString("result");
                     String mobile = object.getString("username");
                     String password = object.getString("password");
+
                     if(TextUtils.equals("BIND_SUCESS",result)){
                         ToastUtil.getInstance().showToast("绑定成功");
 

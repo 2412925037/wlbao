@@ -270,7 +270,7 @@ public class LoginActivity extends BaseActivity {
 
                                     if (TextUtils.equals("NOBIND", bean.getResult())) {
                                         //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
-                                        startActivityForResult(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()), 101);
+                                        startActivity(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()));
 
                                     } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
 

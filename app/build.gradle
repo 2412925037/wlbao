@@ -38,10 +38,10 @@ android {
             signingConfig signingConfigs.config
         }
     }
-//    dexOptions {
-//        //jumboMode true 方法数量过多导致编译不通过
-//        preDexLibraries = false
-//    }
+    dexOptions {
+        //jumboMode true 方法数量过多导致编译不通过
+        preDexLibraries = false
+    }
     sourceSets {
         main {
             //jni库的调用会到资源文件夹下libs里面找so文件

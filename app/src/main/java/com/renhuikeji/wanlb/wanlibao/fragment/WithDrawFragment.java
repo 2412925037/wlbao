@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +18,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alipay.sdk.app.AuthTask;
 import com.flyco.dialog.listener.OnBtnClickL;
 import com.flyco.dialog.widget.MaterialDialog;
 import com.google.gson.Gson;
+import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
+import com.renhuikeji.wanlb.wanlibao.activity.AlipayBindActivity;
+import com.renhuikeji.wanlb.wanlibao.activity.LoginActivity;
 import com.renhuikeji.wanlb.wanlibao.activity.MainActivity;
+import com.renhuikeji.wanlb.wanlibao.alipay.AuthResult;
+import com.renhuikeji.wanlb.wanlibao.alipay.OrderInfoUtil2_0;
+import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginBean;
 import com.renhuikeji.wanlb.wanlibao.bean.MemberInfoBean;
 import com.renhuikeji.wanlb.wanlibao.bean.WeChatCrashBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
 import com.renhuikeji.wanlb.wanlibao.config.Contants;
+import com.renhuikeji.wanlb.wanlibao.utils.ButtonUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.DialogUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.KeyBoardUtils;
@@ -35,6 +45,12 @@ import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.glide.GlideImageLoader;
 import com.renhuikeji.wanlb.wanlibao.views.CircleImageView;
+import com.tencent.mm.opensdk.modelmsg.SendAuth;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -175,6 +191,8 @@ public class WithDrawFragment extends Fragment {
                 }
                 break;
             case R.id.tv_alipay_cash_confirm:
+
+
                     String msession = (String) SPUtils.get(context, Constant.MSESSION, "");
                     if (!TextUtils.isEmpty(msession)) {
                         beginWithDraw(msession);
@@ -196,6 +214,9 @@ public class WithDrawFragment extends Fragment {
             return false;
         }
 
+
+
+
         if (!TextUtils.isEmpty(money_tixian) && Float.parseFloat(money_tixian) < 1.00) {
             ToastUtils.toastForShort(context, "转账金额不能小于1元");
             edit_cashMoney.setText("");
@@ -206,9 +227,23 @@ public class WithDrawFragment extends Fragment {
     }
 
     /**
+     * 微信登录
+     */
+    private void setWXLogin() {
+        if (App.api.isWXAppInstalled()) {
+            SendAuth.Req req = new SendAuth.Req();
+            req.scope = "snsapi_userinfo";
+            req.state = "wlbao_login";
+            App.api.sendReq(req);
+            context.finish();
+        } else
+            Toast.makeText(context, "用户未安装微信", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * 开始转账
      */
-    private void beginTransfer(final String msession) {
+    private void beginTransfer(String msession) {
         //关闭软键盘
         KeyBoardUtils.closeKeybord(edit_cashMoney, context);
         DialogUtils.showProgressDlg(context, "正在提现，请勿操作");
@@ -219,6 +254,15 @@ public class WithDrawFragment extends Fragment {
             public void onSusscess(String data) {
                 DialogUtils.stopProgressDlg();
                 WeChatCrashBean bean = gson.fromJson(data, WeChatCrashBean.class);
+
+                if(TextUtils.equals("NOBIND",bean.getResult())){
+
+                    if (!ButtonUtils.isFastDoubleClick()) {
+                        setWXLogin();
+                    }
+                    return;
+                }
+
                 if (TextUtils.equals("WRONG", bean.getResult())) {
                     ToastUtils.toastForShort(context, bean.getWorngMsg());
                 } else {
@@ -247,11 +291,142 @@ public class WithDrawFragment extends Fragment {
     //----------------------------------------------------
 
 
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler2 = new Handler() {
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+
+                case SDK_AUTH_FLAG:
+
+                    AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
+                    final String resultStatus = authResult.getResultStatus();
+
+                    // 判断resultStatus 为“9000”且result_code
+                    // 为“200”则代表授权成功，具体状态码代表含义可参考授权接口文档
+                    if (TextUtils.equals(resultStatus, "9000") && TextUtils.equals(authResult.getResultCode(), "200")) {
+                        // 获取alipay_open_id，调支付时作为参数extern_token 的value
+                        // 传入，则支付账户为该授权账户
+
+                        String authcode = authResult.getAuthCode();
+                        Log.i("logauthcode", authcode);
+
+                        OkHttpUtils.getInstance().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
+                            @Override
+                            public void onSusscess(String data) {
+
+                                Log.i("tag",OkHttpUtils.decodeUnicode(data));
+                                String[] str = data.split("@");
+                                if (str.length > 1) {
+                                    AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
+                                    String session = str[1];
+                                    SPUtils.put(context, Constant.MSESSION, session);
+
+                                    Log.i("tag", "user" + bean.getUid()+"--"+session);
+
+                                    if (TextUtils.equals("NOBIND", bean.getResult())) {
+                                        //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
+                                        startActivity(new Intent(context, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()));
+
+                                    } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
+
+                                        SPUtils.put(context, Constant.MSESSION, session);
+                                        SPUtils.put(context, Constant.User_Uid, bean.getUid().trim());
+                                        SPUtils.put(context, Constant.User_Phone, bean.getUsername());
+                                        SPUtils.put(context, Constant.User_Psw, bean.getPassword());
+                                        Intent i = new Intent(context, MainActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(i);
+                                        context.finish();
+                                    } else {
+                                        ToastUtils.toastForShort(context, bean.getWorngMsg());
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onError(String meg) {
+                                super.onError(meg);
+                                ToastUtils.toastForShort(context, "登录出错");
+                            }
+                        });
+
+                        //                        Toast.makeText(LoginActivity.this,
+                        //                                "授权成功\n" + String.format("authCode:%s", authResult.getAuthCode()), Toast.LENGTH_SHORT)
+                        //                                .show();
+                    } else {
+                        // 其他状态值则为授权失败
+                        Toast.makeText(context, "授权失败" + String.format("authCode:%s", authResult.getAuthCode()), Toast.LENGTH_SHORT).show();
+
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+    };
+
+    private static final int SDK_AUTH_FLAG = 2;
+    private void alipaylogin(){
+
+        String uid = (String) SPUtils.get(context, Constant.User_Uid, "");
+        OkHttpUtils.getInstance().getJson(Contants.AUTH_ALIPAY + "&uid=" + uid, new OkHttpUtils.HttpCallBack() {
+            @Override
+            public void onSusscess(String data) {
+
+                Log.i("tag", OkHttpUtils.decodeUnicode(data));
+                try {
+                    JSONObject object = new JSONObject(data);
+                    String sign = object.getString("sign");
+                    String target_id = object.getString("target_id");
+
+                    Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, false);
+                    String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
+
+                    final String authInfo = info + "&" + sign;
+
+                    Runnable authRunnable = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // 构造AuthTask 对象
+                            AuthTask authTask = new AuthTask(context);
+                            // 调用授权接口，获取授权结果
+                            Map<String, String> result = authTask.authV2(authInfo, true);
+
+                            Message msg = new Message();
+                            msg.what = SDK_AUTH_FLAG;
+                            msg.obj = result;
+                            mHandler2.sendMessage(msg);
+                        }
+                    };
+
+                    // 必须异步调用
+                    Thread authThread = new Thread(authRunnable);
+                    authThread.start();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(String meg) {
+                super.onError(meg);
+                Log.i("tag", OkHttpUtils.decodeUnicode(meg));
+            }
+        });
+
+
+    }
+
 
     /**
      * 开始转账 - 支付宝
      */
-    private void beginWithDraw(final String msession) {
+    private void beginWithDraw(String msession) {
         //关闭软键盘
         KeyBoardUtils.closeKeybord(edit_cashMoney, context);
         DialogUtils.showProgressDlg(context, "正在提现，请勿操作");
@@ -263,6 +438,13 @@ public class WithDrawFragment extends Fragment {
 
                 DialogUtils.stopProgressDlg();
                 WeChatCrashBean bean = gson.fromJson(data, WeChatCrashBean.class);
+
+                if(TextUtils.equals("NOBIND",bean.getResult())){
+
+                    alipaylogin();
+                    return;
+                }
+
                 if (TextUtils.equals("WRONG", bean.getResult())) {
                     ToastUtils.toastForShort(context, bean.getWorngMsg());
                 } else {

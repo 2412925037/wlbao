@@ -181,12 +181,14 @@ public class AlipayBindActivity extends AppCompatActivity {
 }*/
                 try {
                     JSONObject object = new JSONObject(data);
+                    String uid = object.getString("uid");
                     String result = object.getString("result");
                     String mobile = object.getString("username");
                     String password = object.getString("password");
                     if(TextUtils.equals("BIND_SUCESS",result)){
                         ToastUtil.getInstance().showToast("绑定成功");
 
+                        SPUtils.put(AlipayBindActivity.this,Constant.User_Uid, uid);
                         SPUtils.put(AlipayBindActivity.this,Constant.User_Phone, mobile);
                         SPUtils.put(AlipayBindActivity.this,Constant.User_Psw, password);
 
