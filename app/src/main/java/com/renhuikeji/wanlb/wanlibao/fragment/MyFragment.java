@@ -1,5 +1,6 @@
 package com.renhuikeji.wanlb.wanlibao.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -189,6 +190,7 @@ public class MyFragment extends Fragment {
     private String userPsw;
     private String user_headerurl;
     private String hxPsw = "qqq111";
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -251,7 +253,6 @@ public class MyFragment extends Fragment {
             });
         }
         receiveAdDownload();
-
 
         initSharePop();
         return myView;
@@ -472,9 +473,11 @@ public class MyFragment extends Fragment {
                 startActivity(cashFlowIntent);
                 break;
             case R.id.ll_my_zhuanzhangtixian:   //微信提现
-                Intent cashIntent = new Intent();
-                cashIntent.setClass(getActivity(), WeChatCashActivity.class);
-                startActivity(cashIntent);
+                MainActivity mainActivity1 = (MainActivity) getActivity();
+                mainActivity1.select(3);
+//                Intent cashIntent = new Intent();
+//                cashIntent.setClass(getActivity(), WeChatCashActivity.class);
+//                startActivity(cashIntent);
                 break;
             case R.id.ll_my_hongbaotiqu:        //资金流水
                 startActivity(new Intent(getActivity(), FinancialDetailActivity.class));
@@ -522,7 +525,6 @@ public class MyFragment extends Fragment {
                     if (sharePopupWindow != null)
                         sharePopupWindow.showPopupWindow(view);
                 }
-
 
                 break;
             case R.id.ll_my_zhuangtaishuaxin:   //检测升级
@@ -594,14 +596,12 @@ public class MyFragment extends Fragment {
         }
     }
 
-
     private String share_title;
     private String share_content;
     private String share_logo;
     private String share_url;
 
     private void initSharePop() {
-
 
 
         sharePopupWindow = new SharePopupWindow(getActivity());

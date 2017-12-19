@@ -104,7 +104,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                 SPUtils.put(WXEntryActivity.this, Constant.MSESSION, session);
 
                                 if (TextUtils.equals("NOBIND", bean.getResult())) {
-                                    startActivity(new Intent(WXEntryActivity.this, WechatBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("openid",bean.getOpenid()));
+                                    startActivity(new Intent(WXEntryActivity.this, WechatBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("openid",bean.getOpenid()).putExtra("avatar",bean.getHeadimgurl()).putExtra("nickname",bean.getNickname()));
 
                                 } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
 

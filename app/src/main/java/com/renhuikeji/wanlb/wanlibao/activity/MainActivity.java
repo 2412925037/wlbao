@@ -25,6 +25,7 @@ import com.renhuikeji.wanlb.wanlibao.fragment.MyFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.TaoBaoFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.WithDrawFragment;
 import com.renhuikeji.wanlb.wanlibao.interf.IBackInterface;
+import com.renhuikeji.wanlb.wanlibao.utils.ButtonUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.CheckUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.DialogManager;
@@ -33,7 +34,9 @@ import com.renhuikeji.wanlb.wanlibao.utils.JgSetAliasUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.MsgDbHelper;
 import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.TimeRemind;
+import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
+import com.renhuikeji.wanlb.wanlibao.views.SharePopupWindow;
 import com.renhuikeji.wanlb.wanlibao.widget.PushDialog;
 
 import java.util.ArrayList;
@@ -57,7 +60,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private IndexFragment indexFragment;
     private TaoBaoFragment taoBaoFragment;
-    private HandleFragment handleFragment;
+    //private HandleFragment handleFragment;
     private WithDrawFragment withDrawFragment;
     private MyFragment myFragment;
     private Calendar mCalendar;
@@ -110,10 +113,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         //initFragment();
         bottomNavs = new ArrayList<>();
         for (int i = 0; i < bottom_nav_container.getChildCount(); i++) {
-            View child = bottom_nav_container.getChildAt(i);
-            child.setTag(i);
-            bottomNavs.add(child);
-            child.setOnClickListener(this);
+
+                View child = bottom_nav_container.getChildAt(i);
+                child.setTag(i);
+                bottomNavs.add(child);
+                child.setOnClickListener(this);
         }
         bottomNavs.get(0).setSelected(true);
         startFragment(0);
@@ -177,9 +181,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
+        int i = (int) v.getTag();
+        if (i == 2) {
+            if (!ButtonUtils.isFastDoubleClick()) {
+                if (sharePopupWindow != null)
+                    sharePopupWindow.showPopupWindow(findViewById(R.id.viewview));
+            }
+
+            return;
+        }
+
         reset();
         v.setSelected(true);
-        int i = (int) v.getTag();
+
+        transaction = manager.beginTransaction();
+        startFragment(i);
+
+    }
+
+    public void select(int i){
+
+        reset();
+        bottomNavs.get(i).setSelected(true);
         transaction = manager.beginTransaction();
         startFragment(i);
     }
@@ -218,14 +241,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     transaction.add(R.id.fragmentRoot, taoBaoFragment, "categoryFragment");
                 }*/
                 break;
+
             case 2:
-                if (handleFragment != null) {
-                    transaction.show(handleFragment);
-                } else {
-                    handleFragment = new HandleFragment();
-                    transaction.add(R.id.fragmentRoot, handleFragment, "shoppingCartFragment");
-                }
+
+                ToastUtil.getInstance().showToast("dddddddddddddddd");
                 break;
+//            case 2:
+//
+//
+////                if (handleFragment != null) {
+////                    transaction.show(handleFragment);
+////                } else {
+////                    handleFragment = new HandleFragment();
+////                    transaction.add(R.id.fragmentRoot, handleFragment, "shoppingCartFragment");
+////                }
+//                break;
             case 3:
                 if (withDrawFragment != null) {
                     transaction.show(withDrawFragment);
@@ -258,9 +288,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 //((TaoBaoFragment) fragment).webTaobao.goBack();
                 taoBaoFragment.test();
                 return true;
-            } else if (handleFragment != null && handleFragment.onBackPressed()) {
-                handleFragment.test();
-                return true;
+            //}
+//            else if (handleFragment != null && handleFragment.onBackPressed()) {
+//                handleFragment.test();
+//                return true;
             } else if (!bottomNavs.get(0).isSelected()) {
                 transaction = manager.beginTransaction();
                 hideFragments(transaction);
@@ -269,7 +300,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                     bottomNavs.get(0).setSelected(true);
                     bottomNavs.get(1).setSelected(false);
-                    bottomNavs.get(2).setSelected(false);
+                    //bottomNavs.get(2).setSelected(false);
                     bottomNavs.get(3).setSelected(false);
                     bottomNavs.get(4).setSelected(false);
                 } else {
@@ -278,7 +309,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                     bottomNavs.get(0).setSelected(true);
                     bottomNavs.get(1).setSelected(false);
-                    bottomNavs.get(2).setSelected(false);
+                    //bottomNavs.get(2).setSelected(false);
                     bottomNavs.get(3).setSelected(false);
                     bottomNavs.get(4).setSelected(false);
                 }
@@ -313,9 +344,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (indexFragment != null) {
             transaction.hide(indexFragment);
         }
-        if (handleFragment != null) {
-            transaction.hide(handleFragment);
-        }
+//        if (handleFragment != null) {
+//            transaction.hide(handleFragment);
+//        }
         if (taoBaoFragment != null) {
             transaction.hide(taoBaoFragment);
         }

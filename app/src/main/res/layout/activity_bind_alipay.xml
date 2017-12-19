@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,12 +12,49 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17sp"
+            android:layout_centerInParent="true"
             android:text="支付宝绑定"
             android:textColor="@color/fuzhu_black"
-            android:layout_centerInParent="true"/>
+            android:textSize="17sp" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/cimg_wechat_cash_icon"
+            android:layout_width="@dimen/size_60dp"
+            android:layout_height="@dimen/size_60dp"
+            android:layout_margin="@dimen/size_5dp"
+            android:src="@mipmap/icon_yh" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="昵称: "
+                android:textColor="@color/all_text_color"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/et_wechat_cash_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/all_text_color"
+                android:textSize="@dimen/second_textsize" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,9 +67,8 @@
             android:layout_marginTop="@dimen/size_20dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:paddingTop="@dimen/size_8dp"
             android:paddingBottom="@dimen/size_8dp"
-            >
+            android:paddingTop="@dimen/size_8dp">
 
             <TextView
                 android:id="@+id/tv1"
@@ -67,13 +104,13 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:paddingBottom="@dimen/size_10dp"
-            android:paddingTop="@dimen/size_10dp"
-            android:layout_marginTop="@dimen/size_8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_8dp"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:paddingBottom="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp">
 
             <TextView
                 android:id="@+id/tv_register_msg_test"
@@ -107,31 +144,30 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:layout_above="@+id/view_msg"
-                android:layout_marginBottom="3dp"
                 android:id="@+id/tv_get_yzm"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_above="@+id/view_msg"
                 android:layout_alignParentRight="true"
+                android:layout_marginBottom="3dp"
                 android:layout_marginRight="@dimen/size_20dp"
                 android:background="@drawable/shape_btn_grey_rectangle_nocorner"
                 android:paddingBottom="@dimen/size_2dp"
                 android:paddingLeft="@dimen/size_5dp"
                 android:paddingRight="@dimen/size_5dp"
                 android:text="获取验证码"
-                android:textSize="@dimen/second_textsize"
-                />
+                android:textSize="@dimen/second_textsize" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/size_10dp"
-            android:paddingTop="@dimen/size_10dp"
             android:layout_marginTop="@dimen/size_8dp"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:paddingBottom="@dimen/size_10dp"
+            android:paddingTop="@dimen/size_10dp">
 
             <TextView
                 android:id="@+id/tv5"
@@ -185,7 +221,6 @@
             android:textSize="@dimen/large_margin_size" />
 
     </LinearLayout>
-
 
 
 </LinearLayout>

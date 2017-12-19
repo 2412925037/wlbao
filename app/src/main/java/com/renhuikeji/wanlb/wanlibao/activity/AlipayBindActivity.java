@@ -8,22 +8,24 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginCodeBean;
-import com.renhuikeji.wanlb.wanlibao.bean.LoginCodeBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
 import com.renhuikeji.wanlb.wanlibao.config.Contants;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;
-import com.renhuikeji.wanlb.wanlibao.utils.DialogUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.NetworkManageUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.OkHttpUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.StringUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
+import com.renhuikeji.wanlb.wanlibao.utils.glide.GlideCircleTransform;
+import com.renhuikeji.wanlb.wanlibao.utils.glide.GlideRoundTransform;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,8 +49,13 @@ public class AlipayBindActivity extends AppCompatActivity {
     EditText etYzm;
     @BindView(R.id.inputcode)
     EditText inputcode;
+    @BindView(R.id.et_wechat_cash_phone)
+    TextView etWechatCashPhone;
+    @BindView(R.id.cimg_wechat_cash_icon)
+    ImageView cimgWechatCashIcon;
 
     private String user_id;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +64,11 @@ public class AlipayBindActivity extends AppCompatActivity {
 
         access_code = getIntent().getStringExtra("access_code");
         user_id = getIntent().getStringExtra("uid");
+        String avatar = getIntent().getStringExtra("avatar");
+        String nickname = getIntent().getStringExtra("nickname");
 
+        Glide.with(this).load(avatar).error(R.mipmap.icon_yh).transform(new GlideCircleTransform(this)).into(cimgWechatCashIcon);
+        etWechatCashPhone.setText(nickname);
     }
 
     @OnClick({R.id.tv_get_yzm, R.id.btn_bind})
@@ -77,6 +88,7 @@ public class AlipayBindActivity extends AppCompatActivity {
 
     String session;
     String res_yzm = "";
+
     //获取验证码
     private void getYzm() {
         String phone = etPhone.getText().toString().trim();
@@ -129,7 +141,7 @@ public class AlipayBindActivity extends AppCompatActivity {
     }
 
     public void showToast(String string) {
-        ToastUtils.toastForShort(AlipayBindActivity.this,string);
+        ToastUtils.toastForShort(AlipayBindActivity.this, string);
     }
 
     private void checkPersonalData() {
@@ -149,7 +161,7 @@ public class AlipayBindActivity extends AppCompatActivity {
     }
 
     private void requestRegister(String phone, String yzm) {
-        if (!TextUtils.equals(res_yzm,yzm)) {
+        if (!TextUtils.equals(res_yzm, yzm)) {
             ToastUtils.toastForShort(this, "验证码不正确!");
             return;
         }
@@ -157,15 +169,16 @@ public class AlipayBindActivity extends AppCompatActivity {
     }
 
     private String access_code;
+
     private void requestRegist(final String phone, String yzm) {
         //DialogUtils.showProgressDlg(AlipayBindActivity.this, getString(R.string.loading));
 
-        String url = Contants.ALIPAY_BIND + "&mobile="+phone+"&access_token="+access_code+"&yan="+yzm+"&user_id="+user_id;
+        String url = Contants.ALIPAY_BIND + "&mobile=" + phone + "&access_token=" + access_code + "&yan=" + yzm + "&user_id=" + user_id;
 
         String code = inputcode.getText().toString();
         //推荐码为6位数
-        if(!TextUtils.isEmpty(code) && code.length() == 6){
-            url = Contants.ALIPAY_BIND + "&mobile="+phone+"&access_token="+access_code+"&yan="+yzm + "&recCode="+code+"&user_id="+user_id;
+        if (!TextUtils.isEmpty(code) && code.length() == 6) {
+            url = Contants.ALIPAY_BIND + "&mobile=" + phone + "&access_token=" + access_code + "&yan=" + yzm + "&recCode=" + code + "&user_id=" + user_id;
         }
 
         final String finalUrl = url;
@@ -173,7 +186,7 @@ public class AlipayBindActivity extends AppCompatActivity {
         OkHttpUtils.getInstance().getJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
-                Log.i("tag","url"+ finalUrl +" result:"+data);
+                Log.i("tag", "url" + finalUrl + " result:" + data);
 /*{
     "result": "BIND_SUCESS",
     "uid": "75986",
@@ -185,19 +198,19 @@ public class AlipayBindActivity extends AppCompatActivity {
                     String result = object.getString("result");
                     String mobile = object.getString("username");
                     String password = object.getString("password");
-                    if(TextUtils.equals("BIND_SUCESS",result)){
+                    if (TextUtils.equals("BIND_SUCESS", result)) {
                         ToastUtil.getInstance().showToast("绑定成功");
 
-                        SPUtils.put(AlipayBindActivity.this,Constant.User_Uid, uid);
-                        SPUtils.put(AlipayBindActivity.this,Constant.User_Phone, mobile);
-                        SPUtils.put(AlipayBindActivity.this,Constant.User_Psw, password);
+                        SPUtils.put(AlipayBindActivity.this, Constant.User_Uid, uid);
+                        SPUtils.put(AlipayBindActivity.this, Constant.User_Phone, mobile);
+                        SPUtils.put(AlipayBindActivity.this, Constant.User_Psw, password);
 
                         Intent i = new Intent(AlipayBindActivity.this, MainActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         finish();
-//                        setResult(RESULT_OK);
-//                        finish();
+                        //                        setResult(RESULT_OK);
+                        //                        finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -208,7 +221,7 @@ public class AlipayBindActivity extends AppCompatActivity {
             public void onError(String meg) {
                 //super.onError(meg);
                 ToastUtil.getInstance().showToast("绑定失败");
-                Log.i("tag","url:"+finalUrl + " result:"+meg);
+                Log.i("tag", "url:" + finalUrl + " result:" + meg);
             }
         });
 

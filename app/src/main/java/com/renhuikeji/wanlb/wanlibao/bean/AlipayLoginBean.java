@@ -22,6 +22,24 @@ public class AlipayLoginBean {
     private String worngMsg;
     private String username;
     private String password;
+    private String nick_name;
+    private String avatar;
+
+    public String getNick_name() {
+        return nick_name;
+    }
+
+    public void setNick_name(String nick_name) {
+        this.nick_name = nick_name;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public String getUsername() {
         return username;

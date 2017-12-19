@@ -1,6 +1,8 @@
 package com.renhuikeji.wanlb.wanlibao.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -116,6 +118,7 @@ public class WithDrawFragment extends Fragment {
                     case 3:
                         getUserInfo();
                         break;
+
                 }
             }
         };
@@ -141,6 +144,7 @@ public class WithDrawFragment extends Fragment {
             public void onSusscess(String data) {
                 MemberInfoBean bean = gson.fromJson(data, MemberInfoBean.class);
                 if (TextUtils.equals("SUCESS", bean.getResult())) {
+
                     MemberInfoBean.UserinfoBean userinfoBean = bean.getUserinfo();
                     openid_yasbao = userinfoBean.getOpenid_yasbao();
                     Message message = mHandler.obtainMessage();
@@ -266,7 +270,19 @@ public class WithDrawFragment extends Fragment {
                 if (TextUtils.equals("WRONG", bean.getResult())) {
                     ToastUtils.toastForShort(context, bean.getWorngMsg());
                 } else {
-                    ToastUtils.toastForShort(context, "提现成功");
+                    //ToastUtils.toastForShort(context, "提现成功");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("恭喜你,提现成功");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                            MainActivity activity = (MainActivity) getActivity();
+                            activity.select(4);
+                        }
+                    });
+
                     //发送广播提示修改账户余额
                     Intent intent = new Intent("refreshmoney");
                     intent.putExtra("result", "1");
@@ -448,7 +464,20 @@ public class WithDrawFragment extends Fragment {
                 if (TextUtils.equals("WRONG", bean.getResult())) {
                     ToastUtils.toastForShort(context, bean.getWorngMsg());
                 } else {
-                    ToastUtils.toastForShort(context, "提现成功");
+                    //ToastUtils.toastForShort(context, "提现成功");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("恭喜你,提现成功");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                            MainActivity activity = (MainActivity) getActivity();
+                            activity.select(4);
+                        }
+                    });
+
+
                     //发送广播提示修改账户余额
                     Intent intent = new Intent("refreshmoney");
                     intent.putExtra("result", "1");

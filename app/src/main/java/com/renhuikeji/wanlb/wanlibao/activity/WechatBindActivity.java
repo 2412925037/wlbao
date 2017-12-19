@@ -8,8 +8,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginCodeBean;
@@ -45,8 +47,13 @@ public class WechatBindActivity extends AppCompatActivity {
     EditText etYzm;
     @BindView(R.id.inputcode)
     EditText inputcode;
+    @BindView(R.id.cimg_wechat_cash_icon)
+    ImageView cimgWechatCashIcon;
+    @BindView(R.id.et_wechat_cash_phone)
+    TextView etWechatCashPhone;
 
     private String openid;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +62,11 @@ public class WechatBindActivity extends AppCompatActivity {
 
         access_code = getIntent().getStringExtra("access_code");
         openid = getIntent().getStringExtra("openid");
+
+        String nickname = getIntent().getStringExtra("nickname");
+        String avatar = getIntent().getStringExtra("avatar");
+        etWechatCashPhone.setText(nickname);
+        Glide.with(this).load(avatar).error(R.mipmap.icon_yh).into(cimgWechatCashIcon);
     }
 
     @OnClick({R.id.tv_get_yzm, R.id.btn_bind})
@@ -74,6 +86,7 @@ public class WechatBindActivity extends AppCompatActivity {
 
     String session;
     String res_yzm = "";
+
     //获取验证码
     private void getYzm() {
         String phone = etPhone.getText().toString().trim();
@@ -126,7 +139,7 @@ public class WechatBindActivity extends AppCompatActivity {
     }
 
     public void showToast(String string) {
-        ToastUtils.toastForShort(WechatBindActivity.this,string);
+        ToastUtils.toastForShort(WechatBindActivity.this, string);
     }
 
     private void checkPersonalData() {
@@ -146,7 +159,7 @@ public class WechatBindActivity extends AppCompatActivity {
     }
 
     private void requestRegister(String phone, String yzm) {
-        if (!TextUtils.equals(res_yzm,yzm)) {
+        if (!TextUtils.equals(res_yzm, yzm)) {
             ToastUtils.toastForShort(this, "验证码不正确!");
             return;
         }
@@ -154,15 +167,16 @@ public class WechatBindActivity extends AppCompatActivity {
     }
 
     private String access_code;
+
     private void requestRegist(final String phone, String yzm) {
         //DialogUtils.showProgressDlg(AlipayBindActivity.this, getString(R.string.loading));
 
-        String url = Contants.WECHAT_BIND + "&mobile="+phone+"&access_token="+access_code+"&yan="+yzm+"&openid="+openid;
+        String url = Contants.WECHAT_BIND + "&mobile=" + phone + "&access_token=" + access_code + "&yan=" + yzm + "&openid=" + openid;
 
         String code = inputcode.getText().toString();
         //推荐码为6位数
-        if(!TextUtils.isEmpty(code) && code.length() == 6){
-            url = Contants.ALIPAY_BIND + "&mobile="+phone+"&access_token="+access_code+"&yan="+yzm + "&recCode="+code+"&openid="+openid;
+        if (!TextUtils.isEmpty(code) && code.length() == 6) {
+            url = Contants.ALIPAY_BIND + "&mobile=" + phone + "&access_token=" + access_code + "&yan=" + yzm + "&recCode=" + code + "&openid=" + openid;
         }
 
         final String finalUrl = url;
@@ -170,7 +184,7 @@ public class WechatBindActivity extends AppCompatActivity {
         OkHttpUtils.getInstance().getJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
-                Log.i("tag","url"+ finalUrl +" result:"+data);
+                Log.i("tag", "url" + finalUrl + " result:" + data);
 /*{
     "result": "BIND_SUCESS",
     "uid": "75986",
@@ -183,12 +197,12 @@ public class WechatBindActivity extends AppCompatActivity {
                     String mobile = object.getString("username");
                     String password = object.getString("password");
 
-                    if(TextUtils.equals("BIND_SUCESS",result)){
+                    if (TextUtils.equals("BIND_SUCESS", result)) {
                         ToastUtil.getInstance().showToast("绑定成功");
 
-                        SPUtils.put(WechatBindActivity.this,Constant.User_Uid, uid);
-                        SPUtils.put(WechatBindActivity.this,Constant.User_Phone, mobile);
-                        SPUtils.put(WechatBindActivity.this,Constant.User_Psw, password);
+                        SPUtils.put(WechatBindActivity.this, Constant.User_Uid, uid);
+                        SPUtils.put(WechatBindActivity.this, Constant.User_Phone, mobile);
+                        SPUtils.put(WechatBindActivity.this, Constant.User_Psw, password);
 
                         Intent i = new Intent(WechatBindActivity.this, MainActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -204,7 +218,7 @@ public class WechatBindActivity extends AppCompatActivity {
             public void onError(String meg) {
                 //super.onError(meg);
                 ToastUtil.getInstance().showToast("绑定失败");
-                Log.i("tag","url:"+finalUrl + " result:"+meg);
+                Log.i("tag", "url:" + finalUrl + " result:" + meg);
             }
         });
 

@@ -22,6 +22,24 @@ public class WechatBean {
     private String uid;
     private String username;
     private String password;
+    private String nickname;
+    private String headimgurl;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getHeadimgurl() {
+        return headimgurl;
+    }
+
+    public void setHeadimgurl(String headimgurl) {
+        this.headimgurl = headimgurl;
+    }
 
     public String getUid() {
         return uid;
