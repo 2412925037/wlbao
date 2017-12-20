@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.hyphenate.chat.ChatClient;
 import com.hyphenate.helpdesk.callback.Callback;
@@ -161,10 +162,14 @@ public class MyFragment extends Fragment {
     MyGridView gvMyBills;
     @BindView(R.id.ll_my_fragment_user_msg)
     LinearLayout llMyFragmentUserMsg;
+
+
     @BindView(R.id.user_phone)
     TextView userPhoneTv;
+
     @BindView(R.id.memeber_img)
     RoundCornerImageView memeberImg;
+
     @BindView(R.id.member_money)
     TextView memberMoney;
     @BindView(R.id.member_type)

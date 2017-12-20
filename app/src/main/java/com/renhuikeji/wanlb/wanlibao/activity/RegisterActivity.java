@@ -1,8 +1,12 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,11 +27,12 @@ import com.renhuikeji.wanlb.wanlibao.utils.NetworkManageUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.OkHttpUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.StringUtil;
-import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
 import com.renhuikeji.wanlb.wanlibao.widget.LoadingDialog;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +48,6 @@ public class RegisterActivity extends BaseActivity {
     EditText et_phone;
     @BindView(R.id.et_yzm)
     EditText et_yzm;
-    @BindView(R.id.tv_get_yzm)
-    TextView tv_get_yzm;
     @BindView(R.id.et_password)
     EditText et_password;
     @BindView(R.id.et_password_again)
@@ -58,6 +61,8 @@ public class RegisterActivity extends BaseActivity {
     TextView btn_register;
     @BindView(R.id.img_register_back)
     ImageView imgRegisterBack;
+    @BindView(R.id.tv_get_yzm)
+    TextView tvGetYzm;
     private CodeUtils codeUtils;
     public int res_yzm;
     public LoadingDialog loadingDialog;
@@ -65,11 +70,15 @@ public class RegisterActivity extends BaseActivity {
     private String apikey;
     private String uid;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
+        context = this;
+
         baseUrl = ConfigValue.APP_IP;
         apikey = ConfigValue.API_KEY;
         initView();
@@ -147,6 +156,11 @@ public class RegisterActivity extends BaseActivity {
             showToast("请输入正确的手机号码");
             return;
         }
+
+        tvGetYzm.setClickable(false);
+        index = 120;//60秒
+        changeBtnGetCode();
+
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
         }
@@ -154,7 +168,7 @@ public class RegisterActivity extends BaseActivity {
         new OkHttpUtils().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
-//                {"result":"SUCESS","infocode":311910,"mobile":"15136198901","infotime":1495095271}@PHPSESSID=u6b5029a123np5kub907v3ej92
+                //                {"result":"SUCESS","infocode":311910,"mobile":"15136198901","infotime":1495095271}@PHPSESSID=u6b5029a123np5kub907v3ej92
                 if (TextUtils.isEmpty(data)) {
                     ToastUtils.toastForShort(RegisterActivity.this, "请求数据有问题!");
                     return;
@@ -202,12 +216,12 @@ public class RegisterActivity extends BaseActivity {
 
         String url = baseUrl + "?api=yasbao.api.user.regist&uid=&apiKey=" + apikey + "&username=" + phone + "&password=" + password + "&yan=" + post_yzm;
         String code = inputcode.getText().toString();
-//推荐码为6位数
-        if(!TextUtils.isEmpty(code) && code.length() == 6){
+        //推荐码为6位数
+        if (!TextUtils.isEmpty(code) && code.length() == 6) {
             url = baseUrl + "?api=yasbao.api.user.regist&uid=&apiKey=" + apikey + "&username=" + phone + "&password=" + password + "&yan=" + post_yzm + "&recCode=" + code;
         }
 
-        new OkHttpUtils().getDatas(this,url, session, new OkHttpUtils.HttpCallBack() {
+        new OkHttpUtils().getDatas(this, url, session, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
                 DialogUtils.stopProgressDlg();
@@ -217,7 +231,7 @@ public class RegisterActivity extends BaseActivity {
                 }
                 LoginCodeBean res = new Gson().fromJson(data, LoginCodeBean.class);
                 if (TextUtils.equals(res.getResult(), "REGIST_SUCESS")) {
-                    uid=res.getUid();
+                    uid = res.getUid();
                     SPUtils.put(RegisterActivity.this, Constant.User_Uid, res.getUid().trim());
                     SPUtils.put(RegisterActivity.this, Constant.User_Phone, phone);
                     SPUtils.put(RegisterActivity.this, Constant.User_Psw, password);
@@ -258,9 +272,10 @@ public class RegisterActivity extends BaseActivity {
 
     private static final int MSG_SET_ALIAS = 1001;
 
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_SET_ALIAS:
@@ -296,9 +311,45 @@ public class RegisterActivity extends BaseActivity {
                     Log.e("wch", logs);
             }
 
-//            JpushUtil.showToast(logs, getApplicationContext());
+            //            JpushUtil.showToast(logs, getApplicationContext());
         }
 
     };
     //------------------------------------------------------------
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private int index;
+
+    private void changeBtnGetCode() {
+        final Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                handler.post(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        if (context == null) {
+                            timer.cancel();
+                            return;
+                        }
+
+                        index--;
+                        if (index <= 0) {
+                            tvGetYzm.setClickable(true);
+                            tvGetYzm.setText("获取验证码");
+
+                            timer.cancel();
+                            return;
+                        }
+
+                        tvGetYzm.setText(index + "秒后重试");
+                    }
+                });
+
+            }
+        };
+        timer.schedule(timerTask, 100, 1000);
+    }
 }

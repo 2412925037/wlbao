@@ -1,5 +1,6 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -88,6 +89,7 @@ public class PersonalDataActivity extends BaseActivity {
     private String session = "";
     private String size;
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

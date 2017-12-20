@@ -103,7 +103,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/size_10dp"
                     android:src="@mipmap/icon_yh"
-                    app:corner_size="5" />
+                    />
 
                 <View
                     android:id="@+id/v_my_moment1"

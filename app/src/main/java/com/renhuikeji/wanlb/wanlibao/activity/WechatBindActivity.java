@@ -1,7 +1,11 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -24,9 +28,13 @@ import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.StringUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
+import com.renhuikeji.wanlb.wanlibao.utils.glide.GlideCircleTransform;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +45,7 @@ import butterknife.OnClick;
  * 微信绑定界面
  */
 
-public class WechatBindActivity extends AppCompatActivity {
+public class WechatBindActivity extends BaseActivity {
 
     @BindView(R.id.title)
     TextView title;
@@ -51,14 +59,17 @@ public class WechatBindActivity extends AppCompatActivity {
     ImageView cimgWechatCashIcon;
     @BindView(R.id.et_wechat_cash_phone)
     TextView etWechatCashPhone;
+    @BindView(R.id.tv_get_yzm)
+    TextView tvGetYzm;
 
     private String openid;
-
+    private Context context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_wechat);
         ButterKnife.bind(this);
+        context = this;
 
         access_code = getIntent().getStringExtra("access_code");
         openid = getIntent().getStringExtra("openid");
@@ -66,7 +77,7 @@ public class WechatBindActivity extends AppCompatActivity {
         String nickname = getIntent().getStringExtra("nickname");
         String avatar = getIntent().getStringExtra("avatar");
         etWechatCashPhone.setText(nickname);
-        Glide.with(this).load(avatar).error(R.mipmap.icon_yh).into(cimgWechatCashIcon);
+        Glide.with(this).load(avatar).error(R.mipmap.icon_yh).transform(new GlideCircleTransform(this)).into(cimgWechatCashIcon);
     }
 
     @OnClick({R.id.tv_get_yzm, R.id.btn_bind})
@@ -94,6 +105,10 @@ public class WechatBindActivity extends AppCompatActivity {
             showToast("请输入正确的手机号码");
             return;
         }
+        tvGetYzm.setClickable(false);
+        index = 120;//60秒
+        changeBtnGetCode();
+
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
         }
@@ -136,6 +151,12 @@ public class WechatBindActivity extends AppCompatActivity {
                 ToastUtils.toastForLong(WechatBindActivity.this, "请求失败!");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getApp().finishAllActivity();
     }
 
     public void showToast(String string) {
@@ -222,5 +243,41 @@ public class WechatBindActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private int index;
+
+    private void changeBtnGetCode() {
+        final Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                handler.post(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        if (context == null) {
+                            timer.cancel();
+                            return;
+                        }
+
+                        index--;
+                        if (index <= 0) {
+                            tvGetYzm.setClickable(true);
+                            tvGetYzm.setText("获取验证码");
+
+                            timer.cancel();
+                            return;
+                        }
+
+                        tvGetYzm.setText(index + "秒后重试");
+                    }
+                });
+
+            }
+        };
+        timer.schedule(timerTask, 100, 1000);
     }
 }

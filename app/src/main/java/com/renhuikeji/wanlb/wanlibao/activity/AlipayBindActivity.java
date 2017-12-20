@@ -1,7 +1,11 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -25,10 +29,12 @@ import com.renhuikeji.wanlb.wanlibao.utils.StringUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.glide.GlideCircleTransform;
-import com.renhuikeji.wanlb.wanlibao.utils.glide.GlideRoundTransform;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +45,7 @@ import butterknife.OnClick;
  * 支付宝绑定界面
  */
 
-public class AlipayBindActivity extends AppCompatActivity {
+public class AlipayBindActivity extends BaseActivity {
 
     @BindView(R.id.title)
     TextView title;
@@ -53,8 +59,11 @@ public class AlipayBindActivity extends AppCompatActivity {
     TextView etWechatCashPhone;
     @BindView(R.id.cimg_wechat_cash_icon)
     ImageView cimgWechatCashIcon;
+    @BindView(R.id.tv_get_yzm)
+    TextView tvGetYzm;
 
     private String user_id;
+    private Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +71,7 @@ public class AlipayBindActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bind_alipay);
         ButterKnife.bind(this);
 
+        context = this;
         access_code = getIntent().getStringExtra("access_code");
         user_id = getIntent().getStringExtra("uid");
         String avatar = getIntent().getStringExtra("avatar");
@@ -79,7 +89,6 @@ public class AlipayBindActivity extends AppCompatActivity {
                 getYzm();
                 break;
             case R.id.btn_bind:
-
                 checkPersonalData();
 
                 break;
@@ -96,6 +105,11 @@ public class AlipayBindActivity extends AppCompatActivity {
             showToast("请输入正确的手机号码");
             return;
         }
+
+        tvGetYzm.setClickable(false);
+        index = 120;//60秒
+        changeBtnGetCode();
+
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
         }
@@ -168,6 +182,12 @@ public class AlipayBindActivity extends AppCompatActivity {
         requestRegist(phone, yzm);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getApp().finishAllActivity();
+    }
+
     private String access_code;
 
     private void requestRegist(final String phone, String yzm) {
@@ -225,5 +245,41 @@ public class AlipayBindActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private int index;
+
+    private void changeBtnGetCode() {
+        final Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+
+                handler.post(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        if (context == null) {
+                            timer.cancel();
+                            return;
+                        }
+
+                        index--;
+                        if (index <= 0) {
+                            tvGetYzm.setClickable(true);
+                            tvGetYzm.setText("获取验证码");
+
+                            timer.cancel();
+                            return;
+                        }
+
+                        tvGetYzm.setText(index + "秒后重试");
+                    }
+                });
+
+            }
+        };
+        timer.schedule(timerTask, 100, 1000);
     }
 }
