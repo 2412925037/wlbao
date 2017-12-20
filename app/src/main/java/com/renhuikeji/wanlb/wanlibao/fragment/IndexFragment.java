@@ -340,6 +340,8 @@ public class IndexFragment extends Fragment implements TabLayout.OnTabSelectedLi
                     scrolledDistance = 0;
 
                 }
+
+
                 if (dis > indexSearchRl.getHeight()) {
                     setSearchBarColor(R.color.all_pink);
                     main.setBackgroundColor(getResources().getColor(R.color.all_pink));

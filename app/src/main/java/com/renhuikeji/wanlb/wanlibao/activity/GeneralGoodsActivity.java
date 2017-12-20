@@ -1,6 +1,5 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -130,7 +129,6 @@ public class GeneralGoodsActivity extends BaseActivity {
     private String uid;                 //用户uid
     private String session;
 
-    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,7 +138,7 @@ public class GeneralGoodsActivity extends BaseActivity {
         //实例化数据库SQLiteOpenHelper子类对象
         helper = new SearchHistorySQLite(GeneralGoodsActivity.this);
 
-        uid = (String) SPUtils.get(this, Constant.User_Uid, "");
+        uid = SPUtils.get(this, Constant.User_Uid, "").toString().trim();
         session = (String) SPUtils.get(this, Constant.MSESSION, "");
 
         Bundle bundle = getIntent().getBundleExtra("search");
@@ -240,17 +238,17 @@ public class GeneralGoodsActivity extends BaseActivity {
             DialogUtils.stopProgressDlg();
             return;
         }
-        //Log.i("tag",url);
+        Log.i("tag",url);
         new OkHttpUtils().getDatas(context, url, session, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
-                //Log.i("tag","-->"+data);
+                Log.i("tag","-->"+data);
                 searchGoodBean = new Gson().fromJson(data, SearchGoodBean.class);
                 switch (searchGoodBean.getResult()) {
                     case "SUCESS":
                         if (isFromSearch) {
                             SPUtils.put(GeneralGoodsActivity.this, Constant.search_q, searchGoodBean.getPara().getQ());
-//                            SPUtils.put(GeneralGoodsActivity.this, Constant.search_type, searchGoodBean.getPara().getType());
+                            //                            SPUtils.put(GeneralGoodsActivity.this, Constant.search_type, searchGoodBean.getPara().getType());
                         }
                         List<SearchGoodBean.GoodsArrBean> beans = searchGoodBean.getGoodsArr();
                         if (beans == null || beans.isEmpty()) {
@@ -320,7 +318,7 @@ public class GeneralGoodsActivity extends BaseActivity {
      * 创建筛选框
      */
     private void initShaiXuan() {
-//获取到Bottom Sheet对象
+        //获取到Bottom Sheet对象
         behavior = BottomSheetBehavior.from(bottomSheet);
         //默认设置为隐藏
         behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -333,13 +331,13 @@ public class GeneralGoodsActivity extends BaseActivity {
     GridLayoutManager manager;
 
     private void initRecycler() {
-//        manager = new GridLayoutManager(GeneralGoodsActivity.this, 2);
-//        recyclerView = (LRecyclerView) findViewById(R.id.generalgood_recyclerview);
-//        if (0 == TOTAL_COUNTER) {
-//            recyclerView.setVisibility(View.GONE);
-//            emptyView.setVisibility(View.VISIBLE);
-//            DialogUtils.stopProgressDlg();
-//        }
+        //        manager = new GridLayoutManager(GeneralGoodsActivity.this, 2);
+        //        recyclerView = (LRecyclerView) findViewById(R.id.generalgood_recyclerview);
+        //        if (0 == TOTAL_COUNTER) {
+        //            recyclerView.setVisibility(View.GONE);
+        //            emptyView.setVisibility(View.VISIBLE);
+        //            DialogUtils.stopProgressDlg();
+        //        }
         manager = new GridLayoutManager(GeneralGoodsActivity.this, raw);
         recyclerView.setLayoutManager(manager);
         adapter = new GeneralGoodAdapter(GeneralGoodsActivity.this);
@@ -358,7 +356,6 @@ public class GeneralGoodsActivity extends BaseActivity {
         recyclerView.setArrowImageView(R.drawable.ic_pulltorefresh_arrow);
         recyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
 
-        getData();
         //设置下拉刷新
         recyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -374,10 +371,8 @@ public class GeneralGoodsActivity extends BaseActivity {
         recyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                if (mCurrentCounter < TOTAL_COUNTER && page < totalPage) {
-
+                if (page < totalPage) {
                     page++;
-                    Log.i("page",""+page);
                     getData();
                 } else {
                     recyclerView.setNoMore(true);
@@ -398,6 +393,7 @@ public class GeneralGoodsActivity extends BaseActivity {
 //
 //            @Override
 //            public void onScrolled(int distanceX, int distanceY) {
+//
 //
 //            }
 //
@@ -423,27 +419,27 @@ public class GeneralGoodsActivity extends BaseActivity {
 
         DialogUtils.stopProgressDlg();//
         //初始化数据
-//        recyclerView.refresh();
-//        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                pastVisiblesItems = manager.findFirstVisibleItemPosition();
-//
-//                if (scrolledDistance > HIDE_THRESHOLD) {
-//                    fabGeneralGoods.setVisibility(View.VISIBLE);
-//                    controlsVisible = false;
-//                    scrolledDistance = 0;
-//                } else if (pastVisiblesItems == 1 && !controlsVisible && dy < 0) {
-//                    fabGeneralGoods.setVisibility(View.GONE);
-//                    controlsVisible = true;
-//                    scrolledDistance = 0;
-//                }
-//                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
-//                    scrolledDistance += dy;
-//                }
-//                super.onScrolled(recyclerView, dx, dy);
-//            }
-//        });
+        recyclerView.refresh();
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                pastVisiblesItems = manager.findFirstVisibleItemPosition();
+
+                if (scrolledDistance > HIDE_THRESHOLD) {
+                    fabGeneralGoods.setVisibility(View.VISIBLE);
+                    controlsVisible = false;
+                    scrolledDistance = 0;
+                } else if (pastVisiblesItems == 1 && !controlsVisible && dy < 0) {
+                    fabGeneralGoods.setVisibility(View.GONE);
+                    controlsVisible = true;
+                    scrolledDistance = 0;
+                }
+                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
+                    scrolledDistance += dy;
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     /**

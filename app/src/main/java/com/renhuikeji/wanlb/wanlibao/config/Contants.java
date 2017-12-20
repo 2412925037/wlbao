@@ -41,4 +41,7 @@ public class Contants {
 
     //微信绑定
     public static final String WECHAT_BIND = APP_IP + "?api=yasbao.api.weixin.weixinbind&apiKey="+API_KEY;
+
+    //微信提现
+    public static final String WECHAT_WITHDRAW = APP_IP + "?api=yasbao.api.account.withdrawtoweixin&apiKey="+API_KEY;
 }
