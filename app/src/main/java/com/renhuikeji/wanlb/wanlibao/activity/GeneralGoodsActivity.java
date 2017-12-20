@@ -505,6 +505,7 @@ public class GeneralGoodsActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.title_right_one_btn:      //搜索
+                mCurrentCounter = 0;
                 if (!TextUtils.isEmpty(keyword)) {
                     // SPUtils.put(GeneralGoodsActivity.this, Constant.HISTORY_STR, keyword);
                     insertData(keyword);
