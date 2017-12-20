@@ -1,5 +1,6 @@
 package com.renhuikeji.wanlb.wanlibao.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -129,6 +130,7 @@ public class GeneralGoodsActivity extends BaseActivity {
     private String uid;                 //用户uid
     private String session;
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +140,7 @@ public class GeneralGoodsActivity extends BaseActivity {
         //实例化数据库SQLiteOpenHelper子类对象
         helper = new SearchHistorySQLite(GeneralGoodsActivity.this);
 
-        uid = SPUtils.get(this, Constant.User_Uid, "").toString().trim();
+        uid = (String) SPUtils.get(this, Constant.User_Uid, "");
         session = (String) SPUtils.get(this, Constant.MSESSION, "");
 
         Bundle bundle = getIntent().getBundleExtra("search");
@@ -356,6 +358,7 @@ public class GeneralGoodsActivity extends BaseActivity {
         recyclerView.setArrowImageView(R.drawable.ic_pulltorefresh_arrow);
         recyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
 
+        getData();
         //设置下拉刷新
         recyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -380,34 +383,34 @@ public class GeneralGoodsActivity extends BaseActivity {
             }
         });
 
-        recyclerView.setLScrollListener(new LRecyclerView.LScrollListener() {
-            @Override
-            public void onScrollUp() {
-
-            }
-
-            @Override
-            public void onScrollDown() {
-
-            }
-
-            @Override
-            public void onScrolled(int distanceX, int distanceY) {
-
-
-            }
-
-            @Override
-            public void onScrollStateChanged(int state) {
-                //如果是惯性滑动，停止加载图片
-                if (state == RecyclerView.SCROLL_STATE_SETTLING) {
-                    Glide.with(GeneralGoodsActivity.this).pauseRequests();
-                } else {
-                    //停止和手指滑动状态，加载图片
-                    Glide.with(GeneralGoodsActivity.this).resumeRequests();
-                }
-            }
-        });
+//        recyclerView.setLScrollListener(new LRecyclerView.LScrollListener() {
+//            @Override
+//            public void onScrollUp() {
+//
+//            }
+//
+//            @Override
+//            public void onScrollDown() {
+//
+//            }
+//
+//            @Override
+//            public void onScrolled(int distanceX, int distanceY) {
+//
+//
+//            }
+//
+//            @Override
+//            public void onScrollStateChanged(int state) {
+//                //如果是惯性滑动，停止加载图片
+//                if (state == RecyclerView.SCROLL_STATE_SETTLING) {
+//                    Glide.with(GeneralGoodsActivity.this).pauseRequests();
+//                } else {
+//                    //停止和手指滑动状态，加载图片
+//                    Glide.with(GeneralGoodsActivity.this).resumeRequests();
+//                }
+//            }
+//        });
 
 
         //设置头部加载颜色
@@ -419,27 +422,27 @@ public class GeneralGoodsActivity extends BaseActivity {
 
         DialogUtils.stopProgressDlg();//
         //初始化数据
-        recyclerView.refresh();
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                pastVisiblesItems = manager.findFirstVisibleItemPosition();
-
-                if (scrolledDistance > HIDE_THRESHOLD) {
-                    fabGeneralGoods.setVisibility(View.VISIBLE);
-                    controlsVisible = false;
-                    scrolledDistance = 0;
-                } else if (pastVisiblesItems == 1 && !controlsVisible && dy < 0) {
-                    fabGeneralGoods.setVisibility(View.GONE);
-                    controlsVisible = true;
-                    scrolledDistance = 0;
-                }
-                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
-                    scrolledDistance += dy;
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+//        recyclerView.refresh();
+//        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                pastVisiblesItems = manager.findFirstVisibleItemPosition();
+//
+//                if (scrolledDistance > HIDE_THRESHOLD) {
+//                    fabGeneralGoods.setVisibility(View.VISIBLE);
+//                    controlsVisible = false;
+//                    scrolledDistance = 0;
+//                } else if (pastVisiblesItems == 1 && !controlsVisible && dy < 0) {
+//                    fabGeneralGoods.setVisibility(View.GONE);
+//                    controlsVisible = true;
+//                    scrolledDistance = 0;
+//                }
+//                if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
+//                    scrolledDistance += dy;
+//                }
+//                super.onScrolled(recyclerView, dx, dy);
+//            }
+//        });
     }
 
     /**
