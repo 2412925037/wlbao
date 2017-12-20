@@ -321,7 +321,7 @@ public class OkHttpUtils {
             public void onResponse(Call call, Response response) throws IOException {
 
                 String res=response.body().string().trim();
-                Log.i("tag","url:"+url+" "+decodeUnicode(res));
+                Logger.i("url:"+url+" "+decodeUnicode(res));
                 if (response.isSuccessful()) {
                     BaseBean  resBean = new Gson().fromJson(res, BaseBean.class);
 //                    如果session过期,去更新session

@@ -282,6 +282,7 @@ public class WithDrawFragment extends Fragment {
                             activity.select(4);
                         }
                     });
+                    builder.show();
 
                     //发送广播提示修改账户余额
                     Intent intent = new Intent("refreshmoney");
@@ -476,7 +477,7 @@ public class WithDrawFragment extends Fragment {
                             activity.select(4);
                         }
                     });
-
+                    builder.show();
 
                     //发送广播提示修改账户余额
                     Intent intent = new Intent("refreshmoney");

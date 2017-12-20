@@ -240,11 +240,11 @@ public class GeneralGoodsActivity extends BaseActivity {
             DialogUtils.stopProgressDlg();
             return;
         }
-        Log.i("tag",url);
+        //Log.i("tag",url);
         new OkHttpUtils().getDatas(context, url, session, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
-                Log.i("tag","-->"+data);
+                //Log.i("tag","-->"+data);
                 searchGoodBean = new Gson().fromJson(data, SearchGoodBean.class);
                 switch (searchGoodBean.getResult()) {
                     case "SUCESS":
@@ -375,7 +375,9 @@ public class GeneralGoodsActivity extends BaseActivity {
             @Override
             public void onLoadMore() {
                 if (mCurrentCounter < TOTAL_COUNTER && page < totalPage) {
+
                     page++;
+                    Log.i("page",""+page);
                     getData();
                 } else {
                     recyclerView.setNoMore(true);
@@ -396,7 +398,6 @@ public class GeneralGoodsActivity extends BaseActivity {
 //
 //            @Override
 //            public void onScrolled(int distanceX, int distanceY) {
-//
 //
 //            }
 //
