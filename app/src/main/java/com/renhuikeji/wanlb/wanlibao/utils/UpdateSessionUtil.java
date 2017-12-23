@@ -8,6 +8,7 @@ import com.renhuikeji.wanlb.wanlibao.bean.LoginCodeBean;
 
 /**
  * Created by Administrator on 2017/6/6.
+ *
  */
 
 public class UpdateSessionUtil {
@@ -22,9 +23,10 @@ public class UpdateSessionUtil {
     }
 
     public void update(final Context context, final OkHttpUtils.updateSessionFinish updateSessionFinish){
+        String uid = (String) SPUtils.get(context,Constant.User_Uid,"");
         final String name= (String) SPUtils.get(context,Constant.User_Phone,"");
         final String psw= (String) SPUtils.get(context,Constant.User_Psw,"");
-        String url = "http://app.yasbao.com/Home/Api/gw?api=yasbao.api.user.login&uid=4500&apiKey=f40b1da52dece67017dbb0c7830e586e&username=" + name + "&password=" + psw;
+        String url = "http://app.yasbao.com/Home/Api/gw?api=yasbao.api.user.login&uid="+uid+"&apiKey=f40b1da52dece67017dbb0c7830e586e&username=" + name + "&password=" + psw;
         new OkHttpUtils().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {

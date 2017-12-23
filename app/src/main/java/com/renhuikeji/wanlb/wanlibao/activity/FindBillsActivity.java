@@ -76,6 +76,7 @@ public class FindBillsActivity extends BaseActivity implements OnRefreshListener
         setContentView(R.layout.activity_my_bills);
         ButterKnife.bind(this);
 
+        uid = (String) SPUtils.get(this,Constant.User_Uid,"");
         initViews();
     }
 
@@ -86,7 +87,7 @@ public class FindBillsActivity extends BaseActivity implements OnRefreshListener
         emptyView=findViewById(R.id.empty_general_goods);
         String session = (String) SPUtils.get(this, Constant.MSESSION, "");
         status=1;
-        String url = ConfigValue.APP_IP + "?api=yasbao.api.order.orderlist&uid=0" +""+ "&apiKey=" + ConfigValue.API_KEY + "&status=&p=" + page;
+        String url = ConfigValue.APP_IP + "?api=yasbao.api.order.orderlist&uid=" +uid+ "&apiKey=" + ConfigValue.API_KEY + "&status="+status+"&p=" + page;
         new OkHttpUtils().getDatas(this,url, session, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {

@@ -62,6 +62,7 @@ public class WechatBindActivity extends BaseActivity {
     @BindView(R.id.tv_get_yzm)
     TextView tvGetYzm;
 
+    private String uid;
     private String openid;
     private Context context;
     @Override
@@ -71,6 +72,7 @@ public class WechatBindActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
 
+        uid = (String) SPUtils.get(this,Constant.User_Uid,"");
         access_code = getIntent().getStringExtra("access_code");
         openid = getIntent().getStringExtra("openid");
 
@@ -115,7 +117,7 @@ public class WechatBindActivity extends BaseActivity {
 
         String baseUrl = ConfigValue.APP_IP;
         String apikey = ConfigValue.API_KEY;
-        String url = baseUrl + "?api=yasbao.api.user.getcode&uid=&apiKey=" + apikey + "&mobile=" + phone;
+        String url = baseUrl + "?api=yasbao.api.user.getcode&uid="+uid+"&apiKey=" + apikey + "&mobile=" + phone+"&type=4";
         OkHttpUtils.getInstance().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
@@ -229,6 +231,8 @@ public class WechatBindActivity extends BaseActivity {
                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
                         finish();
+                    }else{
+                        ToastUtil.getInstance().showToast(object.getString("worngMsg"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

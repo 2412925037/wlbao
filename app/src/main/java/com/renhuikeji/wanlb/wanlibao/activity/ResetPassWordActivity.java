@@ -108,10 +108,11 @@ public class ResetPassWordActivity extends BaseActivity {
      * 提交信息
      */
     private void commitInfo() {
-        Log.d("ddd", "session: " + session);
+
         DialogUtils.showProgressDlg(ResetPassWordActivity.this, "正在重置密码.....");
         KeyBoardUtils.closeKeybord(edit_yan, ResetPassWordActivity.this);
-        String uid = (String) SPUtils.get(ResetPassWordActivity.this, Constant.User_Uid, "4500");
+        //写死了uid = 4500
+        String uid = (String) SPUtils.get(ResetPassWordActivity.this, Constant.User_Uid, "");
         String re_phone = edit_phone.getText().toString().trim();
         String re_yan = edit_yan.getText().toString().trim();
         String re_psw = edit_new.getText().toString().trim();
@@ -119,8 +120,8 @@ public class ResetPassWordActivity extends BaseActivity {
         new OkHttpUtils().getDatas(this,url, session, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
+
                 DialogUtils.stopProgressDlg();
-                Log.d("ddd", "   " + data);
                 ResetPWbean pWbean = new Gson().fromJson(data, ResetPWbean.class);
                 if (TextUtils.equals("WRONG", pWbean.getResult())) {
                     ToastUtils.toastForShort(ResetPassWordActivity.this, pWbean.getWorngMsg());

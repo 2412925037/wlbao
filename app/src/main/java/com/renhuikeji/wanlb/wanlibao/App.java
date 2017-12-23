@@ -116,7 +116,7 @@ public class App extends Application {
             @Override
             public void onFailure(int i, String s) {
                 SPUtils.put(getApplicationContext(), Constant.INIT_ALI, false);
-                // Toast.makeText(App.this, "初始化失败,错误码=" + i + " / 错误消息=" + s, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(App.this, "初始化失败,错误码=" + i + " / 错误消息=" + s, Toast.LENGTH_SHORT).show();
                 ToastUtils.toastForShort(App.this, "初始化失败");
             }
         });

@@ -362,7 +362,7 @@ public class LoginActivity extends BaseActivity {
                                         startActivity(i);
                                         finish();
                                     } else {
-                                        ToastUtils.toastForShort(LoginActivity.this, bean.getWorngMsg());
+                                        ToastUtil.getInstance().showToast(bean.getWorngMsg());
                                     }
                                 }
 

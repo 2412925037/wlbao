@@ -138,7 +138,7 @@ public class GeneralGoodsActivity extends BaseActivity {
         //实例化数据库SQLiteOpenHelper子类对象
         helper = new SearchHistorySQLite(GeneralGoodsActivity.this);
 
-        uid = SPUtils.get(this, Constant.User_Uid, "").toString().trim();
+        uid = (String) SPUtils.get(this, Constant.User_Uid, "");
         session = (String) SPUtils.get(this, Constant.MSESSION, "");
 
         Bundle bundle = getIntent().getBundleExtra("search");
@@ -238,17 +238,17 @@ public class GeneralGoodsActivity extends BaseActivity {
             DialogUtils.stopProgressDlg();
             return;
         }
-        Log.i("tag",url);
+
         new OkHttpUtils().getDatas(context, url, session, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
-                Log.i("tag","-->"+data);
+
                 searchGoodBean = new Gson().fromJson(data, SearchGoodBean.class);
                 switch (searchGoodBean.getResult()) {
                     case "SUCESS":
                         if (isFromSearch) {
                             SPUtils.put(GeneralGoodsActivity.this, Constant.search_q, searchGoodBean.getPara().getQ());
-                            //                            SPUtils.put(GeneralGoodsActivity.this, Constant.search_type, searchGoodBean.getPara().getType());
+                            //SPUtils.put(GeneralGoodsActivity.this, Constant.search_type, searchGoodBean.getPara().getType());
                         }
                         List<SearchGoodBean.GoodsArrBean> beans = searchGoodBean.getGoodsArr();
                         if (beans == null || beans.isEmpty()) {
@@ -294,7 +294,6 @@ public class GeneralGoodsActivity extends BaseActivity {
             public void onError(String meg) {
                 super.onError(meg);
 
-                Log.i("tag",meg);
                 DialogUtils.stopProgressDlg();
                 // ToastUtils.toastForShort(GeneralGoodsActivity.this, meg);
                 tvGeneralGoodsNoNet.setVisibility(View.VISIBLE);

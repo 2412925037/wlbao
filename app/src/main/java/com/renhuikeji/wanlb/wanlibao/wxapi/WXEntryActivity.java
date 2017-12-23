@@ -34,8 +34,6 @@ import org.json.JSONObject;
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     private String APP_ID = "wx33c86a95584f8c11";
-    private String APP_SECRET = "60f0d8ec297696947ef0a8ec33ba6b93";
-
     private static final String TAG = "WXEntryActivity";
     private static final int RETURN_MSG_TYPE_LOGIN = 1; //登录
     private static final int RETURN_MSG_TYPE_SHARE = 2; //分享
@@ -96,7 +94,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                         @Override
                         public void onSusscess(String data) {
 
-                            Log.i("tagwechat",OkHttpUtils.decodeUnicode(data));
                             String[] str = data.split("@");
                             if (str.length > 1) {
                                 WechatBean bean = new Gson().fromJson(str[0], WechatBean.class);
@@ -125,6 +122,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                         @Override
                         public void onError(String meg) {
                             super.onError(meg);
+                            ToastUtil.getInstance().showToast(meg);
                             Log.i("tag",OkHttpUtils.decodeUnicode(meg));
                         }
                     });
@@ -133,7 +131,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     //LogUtil.i(TAG, "code:------>" + code);
 
                     //这里拿到了这个code，去做2次网络请求获取access_token和用户个人信息
-                    //getAppToken(code);
+
 
                 } else if (type == RETURN_MSG_TYPE_SHARE) {
                     ToastUtil.getInstance().showToast("微信分享成功");
@@ -144,85 +142,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 finish();
                 break;
         }
-
-    }
-
-    /**
-     * 获取openid  accessToken值用于后期操作
-     *
-     * @param code 请求码
-     */
-    private void getAppToken(String code) {
-
-        String path = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="
-                + APP_ID
-                + "&secret="
-                + APP_SECRET
-                + "&code="
-                + code
-                + "&grant_type=authorization_code";
-
-        new OkHttpUtils().getJson(path, new OkHttpUtils.HttpCallBack() {
-            @Override
-            public void onSusscess(String result) {
-
-                try {
-                    JSONObject object = new JSONObject(result);
-
-                    String access_token = object.getString("access_token");
-                    String openid = object.getString("openid");
-
-                    getUserMsg(access_token, openid);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-    }
-
-    /**
-     * 获取微信个人信息
-     *
-     * @param access_token
-     * @param openid
-     */
-    private void getUserMsg(String access_token, final String openid) {
-        String url = "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid;
-
-        new OkHttpUtils().getJson(url, new OkHttpUtils.HttpCallBack() {
-            @Override
-            public void onSusscess(String result) {
-
-                {
-                    LogUtil.i("tag", result);
-                    JSONObject jsonObject;
-                    String name = null;
-                    String icon = null;
-                    try {
-                        jsonObject = new JSONObject(result);
-                        name = jsonObject.getString("nickname");
-                        icon = jsonObject.getString("headimgurl");
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
-                    }
-
-                    JSONObject object = new JSONObject();
-                    try {
-                        object.put("sso_type", 1);
-                        object.put("sso_openid", openid);
-                        object.put("nickname", name);
-                        object.put("avatar", icon);
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
-                    }
-
-
-                    // TODO: 2017/12/5 接入微信登录接口
-
-                }
-            }
-        });
 
     }
 

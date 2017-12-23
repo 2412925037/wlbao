@@ -81,6 +81,7 @@ public class RegisterActivity extends BaseActivity {
 
         baseUrl = ConfigValue.APP_IP;
         apikey = ConfigValue.API_KEY;
+        uid = (String) SPUtils.get(this,Constant.User_Uid,"");
         initView();
     }
 
@@ -164,7 +165,7 @@ public class RegisterActivity extends BaseActivity {
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
         }
-        String url = baseUrl + "?api=yasbao.api.user.getcode&uid=&apiKey=" + apikey + "&mobile=" + phone + "&type=1";
+        String url = baseUrl + "?api=yasbao.api.user.getcode&uid="+uid+"&apiKey=" + apikey + "&mobile=" + phone + "&type=1";
         new OkHttpUtils().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
@@ -218,7 +219,7 @@ public class RegisterActivity extends BaseActivity {
         String code = inputcode.getText().toString();
         //推荐码为6位数
         if (!TextUtils.isEmpty(code) && code.length() == 6) {
-            url = baseUrl + "?api=yasbao.api.user.regist&uid=&apiKey=" + apikey + "&username=" + phone + "&password=" + password + "&yan=" + post_yzm + "&recCode=" + code;
+            url = baseUrl + "?api=yasbao.api.user.regist&uid="+uid+"&apiKey=" + apikey + "&username=" + phone + "&password=" + password + "&yan=" + post_yzm + "&recCode=" + code;
         }
 
         new OkHttpUtils().getDatas(this, url, session, new OkHttpUtils.HttpCallBack() {

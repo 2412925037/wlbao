@@ -116,7 +116,7 @@ public class AlipayBindActivity extends BaseActivity {
 
         String baseUrl = ConfigValue.APP_IP;
         String apikey = ConfigValue.API_KEY;
-        String url = baseUrl + "?api=yasbao.api.user.getcode&uid=&apiKey=" + apikey + "&mobile=" + phone;
+        String url = baseUrl + "?api=yasbao.api.user.getcode&uid="+user_id+"&apiKey=" + apikey + "&mobile=" + phone+"&type=3";
         OkHttpUtils.getInstance().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
@@ -231,6 +231,8 @@ public class AlipayBindActivity extends BaseActivity {
                         finish();
                         //                        setResult(RESULT_OK);
                         //                        finish();
+                    }else{
+                        ToastUtil.getInstance().showToast(object.getString("worngMsg"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
