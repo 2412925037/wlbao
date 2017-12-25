@@ -102,7 +102,7 @@ public class BaseActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(Constant.RECEIVER_DIALOG);
         IntentFilter filter1 = new IntentFilter(Constant.QIANDAO);
         registerReceiver(dialogReceiver, filter);
-        AppManager.getAppManager().addActivity(this);
+        //AppManager.getAppManager().addActivity(this);
         this.context = this;
 
         String APP_ID = "1106235186";
@@ -110,10 +110,6 @@ public class BaseActivity extends AppCompatActivity {
         mListener = new BaseUiListener();
         initSharePop();
 
-
-        app.bindActivity(this);
-        isMainDisplay= isTopActivity("com.renhuikeji.wanlb.wanlibao","com.renhuikeji.wanlb.wanlibao.activity.MainActivity",this);
-        SPUtils.put(this,Constant.MAIN_DISPLAY,isMainDisplay);
     }
 
     public SharePopupWindow sharePopupWindow;
@@ -255,29 +251,29 @@ public class BaseActivity extends AppCompatActivity {
         App.api.sendReq(req);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        app.bindActivity(this);
-//        isMainDisplay= isTopActivity("com.renhuikeji.wanlb.wanlibao","com.renhuikeji.wanlb.wanlibao.activity.MainActivity",this);
-//        SPUtils.put(this,Constant.MAIN_DISPLAY,isMainDisplay);
-////        initHuanXinListener();
-//
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        app.bindActivity(this);
+        isMainDisplay= isTopActivity("com.renhuikeji.wanlb.wanlibao","com.renhuikeji.wanlb.wanlibao.activity.MainActivity",this);
+        SPUtils.put(this,Constant.MAIN_DISPLAY,isMainDisplay);
+//        initHuanXinListener();
 
-//    // 内存紧张时回收图片资源
-//    @Override
-//    public void onLowMemory() {
-//        super.onLowMemory();
-//        Glide.get(this).clearMemory();
-//    }
-//
-//    // 内存紧张时回收图片资源 API4.0
-//    @Override
-//    public void onTrimMemory(int level) {
-//        super.onTrimMemory(level);
-//        Glide.get(this).trimMemory(level);
-//    }
+    }
+
+    // 内存紧张时回收图片资源
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Glide.get(this).clearMemory();
+    }
+
+    // 内存紧张时回收图片资源 API4.0
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Glide.get(this).trimMemory(level);
+    }
 
     public void invokeGc() {
         new Thread(new Runnable() {

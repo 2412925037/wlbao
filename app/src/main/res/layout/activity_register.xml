@@ -277,7 +277,7 @@
             android:layout_marginLeft="@dimen/size_5dp"
             android:layout_marginRight="@dimen/size_20dp"
             android:background="@null"
-            android:hint="输入推荐码(选填)"
+            android:hint="输入推荐码(没有可不填)"
             android:inputType="textPassword"
             android:textColorHint="@color/grey_text"
             android:textSize="@dimen/second_textsize"

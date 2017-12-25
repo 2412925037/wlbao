@@ -21,6 +21,15 @@ public class AlipayLoginCodeBean {
     private String yan_code;
     private String mobile;
     private long infotime;
+    private String worngMsg;
+
+    public void setWorngMsg(String worngMsg) {
+        this.worngMsg = worngMsg;
+    }
+
+    public String getWorngMsg() {
+        return worngMsg;
+    }
 
     public String getResult() {
         return result;

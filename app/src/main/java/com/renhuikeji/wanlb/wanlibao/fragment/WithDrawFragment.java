@@ -89,6 +89,8 @@ public class WithDrawFragment extends Fragment {
     private Handler mHandler = null;
 
     private MainActivity context ;
+
+    private String msgg = "首次提现到微信钱包，请先关注“万利宝分享平台”微信公众号：yasbao,并从公众号底部菜单：会员中心-》转帐提现，以 后就可以直接在这里提现到微信钱包啦！";
     @SuppressLint("HandlerLeak")
     @Nullable
     @Override
@@ -107,8 +109,7 @@ public class WithDrawFragment extends Fragment {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case 1:
-                        dialog = DialogUtils.getMaterialDialogOneBtn(context, "首次提现请先关注万利宝微信公众号(yasbao)," +
-                                "然后在公众号底部菜单:会员中心-》转账提现，以后就可以在这里直接提现啦！");
+                        dialog = DialogUtils.getMaterialDialogOneBtn(context, msgg);
                         dialog.show();
                         dialog.setOnBtnClickL(new OnBtnClickL() {
                             @Override
@@ -248,7 +249,6 @@ public class WithDrawFragment extends Fragment {
                 break;
             case R.id.tv_alipay_cash_confirm:
 
-
                     String msession = (String) SPUtils.get(context, Constant.MSESSION, "");
                     if (!TextUtils.isEmpty(msession)) {
                         beginWithDraw(msession);
@@ -256,7 +256,6 @@ public class WithDrawFragment extends Fragment {
                 break;
         }
     }
-
 
     /**
      * 检查信息
@@ -320,6 +319,10 @@ public class WithDrawFragment extends Fragment {
 
                 if (TextUtils.equals("WRONG", bean.getResult())) {
                     ToastUtils.toastForShort(context, bean.getWorngMsg());
+
+                    Message message = mHandler.obtainMessage();
+                    message.what = 1;
+                    mHandler.sendMessage(message);
                 } else if(TextUtils.equals("SUCESS",bean.getResult())){
                     //ToastUtils.toastForShort(context, "提现成功");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -346,6 +349,13 @@ public class WithDrawFragment extends Fragment {
                     mHandler.sendMessage(message);
                     // finish();
                 }else{
+                    Message message = mHandler.obtainMessage();
+                    message.what = 1;
+                    mHandler.sendMessage(message);
+
+                    if(bean.getMsg()!=null){
+                        ToastUtil.getInstance().showToast(bean.getMsg());
+                    }else
                     ToastUtil.getInstance().showToast(bean.getWorngMsg());
                 }
             }
@@ -632,7 +642,12 @@ public class WithDrawFragment extends Fragment {
                     mHandler.sendMessage(message);
                     // finish();
                 }else{
-                    ToastUtil.getInstance().showToast(bean.getWorngMsg());
+
+                    if(bean.getMsg()!=null){
+                        ToastUtil.getInstance().showToast(bean.getMsg());
+                    }else
+                        ToastUtil.getInstance().showToast(bean.getWorngMsg());
+
                 }
             }
 

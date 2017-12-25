@@ -108,7 +108,6 @@ public class AlipayBindActivity extends BaseActivity {
 
         tvGetYzm.setClickable(false);
         index = 120;//60秒
-        changeBtnGetCode();
 
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
@@ -137,10 +136,11 @@ public class AlipayBindActivity extends BaseActivity {
                     AlipayLoginCodeBean res = new Gson().fromJson(str[0], AlipayLoginCodeBean.class);
                     session = str[1];
                     if (TextUtils.equals("SUCESS", res.getResult())) {
+                        changeBtnGetCode();
                         res_yzm = res.getInfocode();
                         ToastUtils.toastForLong(AlipayBindActivity.this, "发送成功");
                     } else {
-                        ToastUtils.toastForLong(AlipayBindActivity.this, "发送失败");
+                        ToastUtils.toastForLong(AlipayBindActivity.this, res.getWorngMsg());
                     }
                 }
 
@@ -232,7 +232,12 @@ public class AlipayBindActivity extends BaseActivity {
                         //                        setResult(RESULT_OK);
                         //                        finish();
                     }else{
-                        ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+                        if(object.getString("msg")!=null){
+                            ToastUtil.getInstance().showToast(object.getString("msg"));
+                        }else{
+                            ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+                        }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -270,13 +275,13 @@ public class AlipayBindActivity extends BaseActivity {
                         index--;
                         if (index <= 0) {
                             tvGetYzm.setClickable(true);
-                            tvGetYzm.setText("获取验证码");
+                            tvGetYzm.setText("可操作");
 
                             timer.cancel();
                             return;
                         }
 
-                        tvGetYzm.setText(index + "秒后重试");
+                        tvGetYzm.setText(index + "秒(不可操作)");
                     }
                 });
 

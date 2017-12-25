@@ -109,7 +109,7 @@ public class WechatBindActivity extends BaseActivity {
         }
         tvGetYzm.setClickable(false);
         index = 120;//60秒
-        changeBtnGetCode();
+
 
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
@@ -121,6 +121,7 @@ public class WechatBindActivity extends BaseActivity {
         OkHttpUtils.getInstance().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
+
 /*{
     "result": "SUCESS",
     "infocode": "205697",
@@ -138,10 +139,11 @@ public class WechatBindActivity extends BaseActivity {
                     AlipayLoginCodeBean res = new Gson().fromJson(str[0], AlipayLoginCodeBean.class);
                     session = str[1];
                     if (TextUtils.equals("SUCESS", res.getResult())) {
+                        changeBtnGetCode();
                         res_yzm = res.getInfocode();
                         ToastUtils.toastForLong(WechatBindActivity.this, "发送成功");
                     } else {
-                        ToastUtils.toastForLong(WechatBindActivity.this, "发送失败");
+                        ToastUtils.toastForLong(WechatBindActivity.this, res.getWorngMsg());
                     }
                 }
 
@@ -232,7 +234,11 @@ public class WechatBindActivity extends BaseActivity {
                         startActivity(i);
                         finish();
                     }else{
-                        ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+                        if(object.getString("msg")!=null){
+                            ToastUtil.getInstance().showToast(object.getString("msg"));
+                        }else{
+                            ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -270,13 +276,13 @@ public class WechatBindActivity extends BaseActivity {
                         index--;
                         if (index <= 0) {
                             tvGetYzm.setClickable(true);
-                            tvGetYzm.setText("获取验证码");
+                            tvGetYzm.setText("可操作");
 
                             timer.cancel();
                             return;
                         }
 
-                        tvGetYzm.setText(index + "秒后重试");
+                        tvGetYzm.setText(index + "秒(不可操作)");
                     }
                 });
 

@@ -160,7 +160,7 @@ public class RegisterActivity extends BaseActivity {
 
         tvGetYzm.setClickable(false);
         index = 120;//60秒
-        changeBtnGetCode();
+
 
         if (NetworkManageUtil.isNetworkAvailable(this)) {
             ToastUtils.toastForShort(this, "正在发送...");
@@ -179,6 +179,7 @@ public class RegisterActivity extends BaseActivity {
                     LoginCodeBean res = new Gson().fromJson(str[0], LoginCodeBean.class);
                     session = str[1];
                     if (TextUtils.equals("SUCESS", res.getResult())) {
+                        changeBtnGetCode();
                         res_yzm = res.getInfocode();
                         ToastUtils.toastForLong(RegisterActivity.this, "发送成功");
                     } else {
@@ -339,13 +340,13 @@ public class RegisterActivity extends BaseActivity {
                         index--;
                         if (index <= 0) {
                             tvGetYzm.setClickable(true);
-                            tvGetYzm.setText("获取验证码");
+                            tvGetYzm.setText("可操作");
 
                             timer.cancel();
                             return;
                         }
 
-                        tvGetYzm.setText(index + "秒后重试");
+                        tvGetYzm.setText(index + "秒(不可操作)");
                     }
                 });
 
