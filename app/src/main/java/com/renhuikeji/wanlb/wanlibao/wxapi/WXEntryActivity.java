@@ -42,10 +42,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean handl = App.api.handleIntent(getIntent(), this);
-        if (!handl) {
-            finish();
-        }
+        //如果没回调onResp，八成是这句没有写
+        App.api.handleIntent(getIntent(), this);
+//        boolean handl = App.api.handleIntent(getIntent(), this);
+//        Log.i("tag",handl+"");
+//        if (!handl) {
+//            finish();
+//        }
     }
 
     /**
@@ -90,6 +93,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     //用户换取access_token的code，仅在ErrCode为0时有效
                     String code = ((SendAuth.Resp) baseResp).code;
 
+                    Log.i("tag",code);
                     OkHttpUtils.getInstance().getYzmJson(Contants.WECHAT_LOGIN + "&code=" + code, new OkHttpUtils.HttpCallBack() {
                         @Override
                         public void onSusscess(String data) {
@@ -102,7 +106,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
                                 if (TextUtils.equals("NOBIND", bean.getResult())) {
                                     startActivity(new Intent(WXEntryActivity.this, WechatBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("openid",bean.getOpenid()).putExtra("avatar",bean.getHeadimgurl()).putExtra("nickname",bean.getNickname()));
-
+                                    finish();
                                 } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
 
                                     SPUtils.put(WXEntryActivity.this, Constant.MSESSION, session);
@@ -115,7 +119,10 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                                     finish();
                                 } else {
                                     ToastUtils.toastForShort(WXEntryActivity.this, bean.getWorngMsg());
+                                    finish();
                                 }
+                            }else{
+                                finish();
                             }
                         }
 

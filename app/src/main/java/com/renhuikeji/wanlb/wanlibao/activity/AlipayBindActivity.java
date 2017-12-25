@@ -127,6 +127,7 @@ public class AlipayBindActivity extends BaseActivity {
     "infotime": 1513235408
 }@PHPSESSID=66voka4o45hv6kb3jjah7k78o1*/
                 if (TextUtils.isEmpty(data)) {
+                    tvGetYzm.setClickable(true);
                     ToastUtils.toastForShort(AlipayBindActivity.this, "请求数据有问题!");
                     return;
                 }
@@ -140,8 +141,11 @@ public class AlipayBindActivity extends BaseActivity {
                         res_yzm = res.getInfocode();
                         ToastUtils.toastForLong(AlipayBindActivity.this, "发送成功");
                     } else {
+                        tvGetYzm.setClickable(true);
                         ToastUtils.toastForLong(AlipayBindActivity.this, res.getWorngMsg());
                     }
+                }else{
+                    tvGetYzm.setClickable(true);
                 }
 
             }
@@ -149,6 +153,7 @@ public class AlipayBindActivity extends BaseActivity {
             @Override
             public void onError(String meg) {
                 super.onError(meg);
+                tvGetYzm.setClickable(true);
                 ToastUtils.toastForLong(AlipayBindActivity.this, "请求失败!");
             }
         });
@@ -232,11 +237,13 @@ public class AlipayBindActivity extends BaseActivity {
                         //                        setResult(RESULT_OK);
                         //                        finish();
                     }else{
-                        if(object.getString("msg")!=null){
-                            ToastUtil.getInstance().showToast(object.getString("msg"));
-                        }else{
-                            ToastUtil.getInstance().showToast(object.getString("worngMsg"));
-                        }
+
+                        ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+//                        if(object.getString("msg")!=null){
+//                            ToastUtil.getInstance().showToast(object.getString("msg"));
+//                        }else{
+//                            ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+//                        }
 
                     }
                 } catch (JSONException e) {

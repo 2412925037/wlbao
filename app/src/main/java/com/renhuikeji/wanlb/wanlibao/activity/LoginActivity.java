@@ -77,6 +77,7 @@ public class LoginActivity extends BaseActivity {
         old_session = (String) SPUtils.get(LoginActivity.this, Constant.MSESSION, "");
         uid = (String) SPUtils.get(this, Constant.User_Uid, "");
 
+        //regToWx();
     }
 
     public void showToast(String string) {
@@ -188,7 +189,7 @@ public class LoginActivity extends BaseActivity {
                             String target_id = object.getString("target_id");
 
                             sign = URLEncoder.encode(sign, "utf-8");
-                            Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, false);
+                            Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, true);
                             String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
 
                             final String authInfo = info + "&" + sign;
@@ -416,17 +417,31 @@ public class LoginActivity extends BaseActivity {
         getApp().finishAllActivity();
     }
 
+//    public static final String APP_ID = "wx33c86a95584f8c11";
+//    IWXAPI api;
+//    private void regToWx() {
+//        api = WXAPIFactory.createWXAPI(this, APP_ID, false);
+//        api.registerApp(APP_ID);
+//    }
 
     /**
      * 微信登录
      */
     private void setWXLogin() {
+
+//        // send oauth request
+//        final  SendAuth.Req req = new SendAuth.Req();
+//        req.scope = "snsapi_userinfo";
+//        req.state = "wechat_sdk_demo";
+//        api.sendReq(req);
+
         if (App.api.isWXAppInstalled()) {
             SendAuth.Req req = new SendAuth.Req();
             req.scope = "snsapi_userinfo";
             req.state = "wlbao_login";
             App.api.sendReq(req);
-            finish();
+
+            //finish();
         } else
             Toast.makeText(LoginActivity.this, "用户未安装微信", Toast.LENGTH_SHORT).show();
     }

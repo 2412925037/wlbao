@@ -41,7 +41,7 @@ import static com.renhuikeji.wanlb.wanlibao.utils.ActivityUtils.isTopActivity;
 
 public class App extends Application {
 
-    private static Context context;
+    public static Context context;
 
     public static final String PERSONAL_DATA = "personal_data";
     private List<Activity> activities = new ArrayList<>();
@@ -53,7 +53,7 @@ public class App extends Application {
     public static final String APP_ID = "wx33c86a95584f8c11";
 
     private void regToWx() {
-        api = WXAPIFactory.createWXAPI(this, APP_ID, true);
+        api = WXAPIFactory.createWXAPI(this, APP_ID, false);
         api.registerApp(APP_ID);
     }
 
@@ -89,8 +89,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        regToWx();
 
         Logger.addLogAdapter(new AndroidLogAdapter());
 
@@ -148,6 +146,8 @@ public class App extends Application {
         initDataBase();
         //  初始化环信
         initHuanXinListener();
+
+        regToWx();
     }
 
 

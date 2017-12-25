@@ -166,11 +166,12 @@ public class RegisterActivity extends BaseActivity {
             ToastUtils.toastForShort(this, "正在发送...");
         }
         String url = baseUrl + "?api=yasbao.api.user.getcode&uid="+uid+"&apiKey=" + apikey + "&mobile=" + phone + "&type=1";
-        new OkHttpUtils().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
+        OkHttpUtils.getInstance().getYzmJson(url, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
                 //                {"result":"SUCESS","infocode":311910,"mobile":"15136198901","infotime":1495095271}@PHPSESSID=u6b5029a123np5kub907v3ej92
                 if (TextUtils.isEmpty(data)) {
+                    tvGetYzm.setClickable(true);
                     ToastUtils.toastForShort(RegisterActivity.this, "请求数据有问题!");
                     return;
                 }
@@ -183,8 +184,11 @@ public class RegisterActivity extends BaseActivity {
                         res_yzm = res.getInfocode();
                         ToastUtils.toastForLong(RegisterActivity.this, "发送成功");
                     } else {
+                        tvGetYzm.setClickable(true);
                         ToastUtils.toastForLong(RegisterActivity.this, res.getWorngMsg());
                     }
+                }else{
+                    tvGetYzm.setClickable(true);
                 }
 
             }
@@ -192,6 +196,7 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onError(String meg) {
                 super.onError(meg);
+                tvGetYzm.setClickable(true);
                 ToastUtils.toastForLong(RegisterActivity.this, "请求失败!");
             }
         });

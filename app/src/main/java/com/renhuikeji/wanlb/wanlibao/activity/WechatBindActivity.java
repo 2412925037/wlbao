@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginCodeBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
@@ -130,6 +131,7 @@ public class WechatBindActivity extends BaseActivity {
     "infotime": 1513235408
 }@PHPSESSID=66voka4o45hv6kb3jjah7k78o1*/
                 if (TextUtils.isEmpty(data)) {
+                    tvGetYzm.setClickable(true);
                     ToastUtils.toastForShort(WechatBindActivity.this, "请求数据有问题!");
                     return;
                 }
@@ -143,8 +145,11 @@ public class WechatBindActivity extends BaseActivity {
                         res_yzm = res.getInfocode();
                         ToastUtils.toastForLong(WechatBindActivity.this, "发送成功");
                     } else {
+                        tvGetYzm.setClickable(true);
                         ToastUtils.toastForLong(WechatBindActivity.this, res.getWorngMsg());
                     }
+                }else{
+                    tvGetYzm.setClickable(true);
                 }
 
             }
@@ -152,6 +157,7 @@ public class WechatBindActivity extends BaseActivity {
             @Override
             public void onError(String meg) {
                 super.onError(meg);
+                tvGetYzm.setClickable(true);
                 ToastUtils.toastForLong(WechatBindActivity.this, "请求失败!");
             }
         });
@@ -160,6 +166,8 @@ public class WechatBindActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        Log.i("tag","返回键");
         getApp().finishAllActivity();
     }
 
@@ -234,11 +242,13 @@ public class WechatBindActivity extends BaseActivity {
                         startActivity(i);
                         finish();
                     }else{
-                        if(object.getString("msg")!=null){
-                            ToastUtil.getInstance().showToast(object.getString("msg"));
-                        }else{
-                            ToastUtil.getInstance().showToast(object.getString("worngMsg"));
-                        }
+
+                        ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+//                        if(object.getString("msg")!=null){
+//                            ToastUtil.getInstance().showToast(object.getString("msg"));
+//                        }else{
+//                            ToastUtil.getInstance().showToast(object.getString("worngMsg"));
+//                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

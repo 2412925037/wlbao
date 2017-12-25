@@ -174,13 +174,12 @@ public class WithDrawFragment extends Fragment {
                     ToastUtils.toastForLong(context, "用户信息获取失败");
                 }
 
-
             }
 
             @Override
             public void onError(String meg) {
                 super.onError(meg);
-                context.finish();
+                //context.finish();
                 ToastUtils.toastForShort(context, getResources().getString(R.string.bad_net));
             }
         });
@@ -192,7 +191,7 @@ public class WithDrawFragment extends Fragment {
     private void getUserInfo() {
         String url = ConfigValue.MEMBER_INFO + "&uid=" + suid + "&fields=id,money,nick,vip,salesman,headimgurl,subscribe_yasbao,openid_yasbao,level,mobile";
         String msession = (String) SPUtils.get(context, Constant.MSESSION, "");
-        new OkHttpUtils().getDatas(context,url, msession, new OkHttpUtils.HttpCallBack() {
+        OkHttpUtils.getInstance().getDatas(context,url, msession, new OkHttpUtils.HttpCallBack() {
             @Override
             public void onSusscess(String data) {
                 MemberInfoBean bean = gson.fromJson(data, MemberInfoBean.class);
@@ -226,7 +225,7 @@ public class WithDrawFragment extends Fragment {
             @Override
             public void onError(String meg) {
                 super.onError(meg);
-                context.finish();
+                //context.finish();
                 ToastUtils.toastForShort(context, getResources().getString(R.string.bad_net));
             }
         });
@@ -287,7 +286,7 @@ public class WithDrawFragment extends Fragment {
             req.scope = "snsapi_userinfo";
             req.state = "wlbao_login";
             App.api.sendReq(req);
-            context.finish();
+            //context.finish();
         } else
             Toast.makeText(context, "用户未安装微信", Toast.LENGTH_SHORT).show();
     }
@@ -407,7 +406,7 @@ public class WithDrawFragment extends Fragment {
                                         Intent i = new Intent(context, MainActivity.class);
                                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(i);
-                                        context.finish();
+                                        //context.finish();
                                     } else {
                                         ToastUtils.toastForShort(context, bean.getWorngMsg());
                                     }
@@ -550,7 +549,7 @@ public class WithDrawFragment extends Fragment {
                     String sign = object.getString("sign");
                     String target_id = object.getString("target_id");
 
-                    Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, false);
+                    Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, true);
                     String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
 
                     final String authInfo = info + "&" + sign;
@@ -642,11 +641,11 @@ public class WithDrawFragment extends Fragment {
                     mHandler.sendMessage(message);
                     // finish();
                 }else{
-
-                    if(bean.getMsg()!=null){
-                        ToastUtil.getInstance().showToast(bean.getMsg());
-                    }else
-                        ToastUtil.getInstance().showToast(bean.getWorngMsg());
+                    ToastUtil.getInstance().showToast(bean.getWorngMsg());
+//                    if(bean.getMsg()!=null){
+//                        ToastUtil.getInstance().showToast(bean.getMsg());
+//                    }else
+//                        ToastUtil.getInstance().showToast(bean.getWorngMsg());
 
                 }
             }

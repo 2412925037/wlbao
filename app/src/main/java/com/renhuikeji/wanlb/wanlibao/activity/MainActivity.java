@@ -9,6 +9,7 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,9 +17,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.ali.auth.third.ui.context.CallbackContext;
+import com.google.gson.Gson;
 import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.bean.Message;
+import com.renhuikeji.wanlb.wanlibao.bean.ShareBean;
+import com.renhuikeji.wanlb.wanlibao.config.Contants;
 import com.renhuikeji.wanlb.wanlibao.fragment.HandleFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.IndexFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.MyFragment;
@@ -32,12 +36,21 @@ import com.renhuikeji.wanlb.wanlibao.utils.DialogManager;
 import com.renhuikeji.wanlb.wanlibao.utils.HuanXinUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.JgSetAliasUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.MsgDbHelper;
+import com.renhuikeji.wanlb.wanlibao.utils.OkHttpUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.TimeRemind;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
 import com.renhuikeji.wanlb.wanlibao.views.SharePopupWindow;
 import com.renhuikeji.wanlb.wanlibao.widget.PushDialog;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +59,8 @@ import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.renhuikeji.wanlb.wanlibao.utils.SPUtils.get;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, IBackInterface {
 
@@ -79,6 +94,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public int getStatusHeight() {
         return statusHeight;
     }
+    String APP_ID = "1106235186";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +112,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         util.setAlias(uid);
 
         statusHeight = getStatusBarHeight();
+
+
+        mTencent = Tencent.createInstance(APP_ID, MainActivity.this);
+        mListener = new BaseUiListener();
+
+        initSharePop();
+
+        //app.bindActivity(MainActivity.this);
+        boolean b = (boolean) SPUtils.get(this, Constant.MAIN_DISPLAY, false);
+        boolean isReceive = (boolean) SPUtils.get(this, Constant.RECEIVE_MSG, false);
+        //        如果此时不在mainactivity并且接受到推送,就把dialog取消.
+        if (isReceive) {
+            Dialog dialog = getDialog();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+        }
+        showMsgDialog();
     }
 
     public void permission() {
@@ -159,25 +193,159 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        app.bindActivity(MainActivity.this);
-        boolean b = (boolean) SPUtils.get(this, Constant.MAIN_DISPLAY, false);
-        boolean isReceive = (boolean) SPUtils.get(this, Constant.RECEIVE_MSG, false);
-//        如果此时不在mainactivity并且接受到推送,就把dialog取消.
-        if (isReceive) {
-            Dialog dialog = getDialog();
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-        }
-        showMsgDialog();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        app.unbindActivity(MainActivity.this);
+        //app.unbindActivity(MainActivity.this);
         TimeRemind.canalAlarm(MainActivity.this, "activity.wch.alarm");
     }
+
+    /***************分享按钮点击*****************/
+    public SharePopupWindow sharePopupWindow;
+    private String share_title;
+    private String share_content;
+    private String share_logo;
+    private String share_url;
+
+    private void initSharePop() {
+
+        sharePopupWindow = new SharePopupWindow(this);
+        sharePopupWindow.setonItemClickListener(new SharePopupWindow.onMyItemClickListener() {
+            @Override
+            public void onitemclick(final View view) {
+
+                 String uid = (String) get(MainActivity.this, Constant.User_Uid, "");
+                 String msession = (String) get(MainActivity.this, Constant.MSESSION, "");
+
+                sharePopupWindow.dismiss();
+                String url = Contants.SHARE_URL + "&uid="+uid;
+                OkHttpUtils.getInstance().getDatas(MainActivity.this, url, msession, new OkHttpUtils.HttpCallBack() {
+                    @Override
+                    public void onSusscess(String data) {
+
+
+
+                        ShareBean shareBean = new Gson().fromJson(data,ShareBean.class);
+                        share_title = shareBean.getShareData().getTitle();
+                        share_content = shareBean.getShareData().getContent();
+                        share_logo = shareBean.getShareData().getLogo();
+                        share_url = shareBean.getShareData().getUrl();
+
+                        int id = (int) view.getTag();
+                        switch (id) {
+                            case 0:
+                                //if (!ButtonUtils.isFastDoubleClick())
+                                    shareToQZone();
+                                break;
+                            case 1:
+                                //if (!ButtonUtils.isFastDoubleClick())
+                                    shareToQQ();
+                                break;
+                            case 2:
+                                //会话
+                                //if (!ButtonUtils.isFastDoubleClick()) {
+
+                                    if (App.api.isWXAppInstalled()) {
+                                        shareLinkPage(false);
+                                    } else {
+                                        ToastUtil.getInstance().showToast("你当前并未安装微信");
+                                    }
+                                //}
+                                break;
+                            case 3:
+                                //if (!ButtonUtils.isFastDoubleClick()) {
+
+                                    //朋友圈
+                                    if (App.api.isWXAppInstalled()) {
+                                        shareLinkPage(true);
+                                    } else {
+                                        ToastUtil.getInstance().showToast("你当前并未安装微信");
+                                    }
+                                //}
+                                break;
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(String meg) {
+                        super.onError(meg);
+                        ToastUtil.getInstance().showToast("分享失败");
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void shareToQZone() {
+        Bundle params2 = new Bundle();
+        params2.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
+        params2.putString(QzoneShare.SHARE_TO_QQ_TITLE, share_title);// 标题
+        params2.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, share_content);// 摘要
+        params2.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, share_url);// 内容地址
+        ArrayList<String> imgUrlList = new ArrayList<>();
+        imgUrlList.add(share_logo);
+        params2.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrlList);// 图片地址
+        mTencent.shareToQzone(this, params2, mListener);
+    }
+
+    private void shareToQQ() {
+        Bundle params = new Bundle();
+        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+        params.putString(QQShare.SHARE_TO_QQ_TITLE, share_title);// 标题
+        params.putString(QQShare.SHARE_TO_QQ_SUMMARY, share_content);// 摘要
+        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, share_url);// 内容地址
+        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, share_logo);// 网络图片地址　　params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "应用名称");// 应用名称
+        params.putString(QQShare.SHARE_TO_QQ_EXT_INT, "其它附加功能");
+
+        mTencent.shareToQQ(this, params, mListener);
+    }
+
+    private Tencent mTencent;
+
+    class BaseUiListener implements IUiListener {
+
+        @Override
+        public void onComplete(Object o) {
+            ToastUtil.getInstance().showToast("分享成功");
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            ToastUtil.getInstance().showToast("分享失败");
+        }
+
+        @Override
+        public void onCancel() {
+            ToastUtil.getInstance().showToast("分享取消");
+        }
+    }
+
+    private BaseUiListener mListener;
+
+    public void shareLinkPage(boolean isTimelineCb) {
+
+
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = share_url;
+
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+
+        msg.title = share_title;
+        msg.description = share_content;
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        req.scene = isTimelineCb ? SendMessageToWX.Req.WXSceneTimeline : SendMessageToWX.Req.WXSceneSession;
+
+        App.api.sendReq(req);
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -244,7 +412,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             case 2:
 
-                ToastUtil.getInstance().showToast("dddddddddddddddd");
                 break;
 //            case 2:
 //
@@ -365,6 +532,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         CallbackContext.onActivityResult(requestCode, resultCode, data);
+
+        if (mTencent != null) {
+            Tencent.onActivityResultData(requestCode, resultCode, data, mListener);
+        }
     }
 
     @Override
