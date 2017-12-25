@@ -129,6 +129,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                         @Override
                         public void onError(String meg) {
                             super.onError(meg);
+                            finish();
                             ToastUtil.getInstance().showToast(meg);
                             Log.i("tag",OkHttpUtils.decodeUnicode(meg));
                         }
