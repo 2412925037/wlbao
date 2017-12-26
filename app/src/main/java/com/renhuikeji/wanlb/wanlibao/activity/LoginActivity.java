@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,7 +19,6 @@ import com.google.gson.Gson;
 import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.alipay.AuthResult;
-import com.renhuikeji.wanlb.wanlibao.alipay.OrderInfoUtil2_0;
 import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginBean;
 import com.renhuikeji.wanlb.wanlibao.bean.LoginCodeBean;
 import com.renhuikeji.wanlb.wanlibao.config.Contants;
@@ -34,13 +31,9 @@ import com.renhuikeji.wanlb.wanlibao.utils.StringUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -49,6 +42,9 @@ import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
 
+    private static final int SDK_PAY_FLAG = 1;
+    private static final int SDK_AUTH_FLAG = 2;
+    public boolean showPd = false;
     @BindView(R.id.et_phone_login)
     EditText et_phone_login;
     @BindView(R.id.et_password_login)
@@ -57,8 +53,6 @@ public class LoginActivity extends BaseActivity {
     ImageView iv_show_pd;
     @BindView(R.id.btn_login)
     TextView btn_login;
-
-    public boolean showPd = false;
     @BindView(R.id.tv_to_register_login)
     TextView tv_to_register_login;
     @BindView(R.id.img_login_back)
@@ -68,6 +62,73 @@ public class LoginActivity extends BaseActivity {
     private String session;
     private String old_session;
     private String uid;
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
+                if (TextUtils.equals(authResult.getResultStatus(), "9000")) {
+                    if (authResult.getResultCode().equals("200")) {
+
+                        String authcode = authResult.getAuthCode();
+                        Log.i("logauthcode", authcode);
+
+                        OkHttpUtils.getInstance().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
+                            @Override
+                            public void onSusscess(String data) {
+
+                                Log.i("tag", OkHttpUtils.decodeUnicode(data));
+                                String[] str = data.split("@");
+                                if (str.length > 1) {
+                                    AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
+                                    session = str[1];
+                                    SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
+
+                                    Log.i("tag", "user" + bean.getUid() + "--" + session);
+
+                                    if (TextUtils.equals("NOBIND", bean.getResult())) {
+                                        //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
+                                        startActivity(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()).putExtra("avatar", bean.getAvatar()).putExtra("nickname", bean.getNick_name()));
+
+                                    } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
+
+                                        SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
+                                        SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
+                                        SPUtils.put(LoginActivity.this, Constant.User_Phone, bean.getUsername());
+                                        SPUtils.put(LoginActivity.this, Constant.User_Psw, bean.getPassword());
+                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(i);
+                                        finish();
+                                    } else {
+                                        ToastUtil.getInstance().showToast(bean.getWorngMsg());
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onError(String meg) {
+                                super.onError(meg);
+                                ToastUtils.toastForShort(LoginActivity.this, "登录出错");
+                            }
+                        });
+
+                    } else {
+                        ToastUtil.getInstance().showToast("授权失败");
+                    }
+                } else if (authResult.getResultStatus().equals("6001")) {
+                    ToastUtil.getInstance().showToast("用户取消");
+                } else if (authResult.getResultStatus().equals("4000")) {
+                    ToastUtil.getInstance().showToast("支付宝异常");
+                } else if (authResult.getResultStatus().equals("6002")) {
+                    ToastUtil.getInstance().showToast("网络连接出错");
+                } else {
+                    ToastUtil.getInstance().showToast("授权失败");
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,95 +215,6 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.img_login_back, R.id.iv_show_pd, R.id.btn_login, R.id.tv_to_register_login, R.id.tv_forget_psw, R.id.alipay, R.id.wechat})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.img_login_back:
-                LoginActivity.this.finish();
-                break;
-            case R.id.iv_show_pd:
-                isShowPd();
-                break;
-            case R.id.btn_login:
-                booleanLogin();
-                break;
-            case R.id.tv_to_register_login:  //注册
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.tv_forget_psw:  //忘记密码
-                Intent intent1 = new Intent(LoginActivity.this, ResetPassWordActivity.class);
-                startActivity(intent1);
-                break;
-
-            case R.id.alipay:
-
-
-                OkHttpUtils.getInstance().getJson(Contants.AUTH_ALIPAY + "&uid=" + uid, new OkHttpUtils.HttpCallBack() {
-                    @Override
-                    public void onSusscess(final String data) {
-
-                        Log.i("tag", OkHttpUtils.decodeUnicode(data));
-                        try {
-                            JSONObject object = new JSONObject(data);
-                            String sign = object.getString("sign");
-                            String target_id = object.getString("target_id");
-
-                            sign = URLEncoder.encode(sign, "utf-8");
-                            Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, true);
-                            String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
-
-                            final String authInfo = info + "&" + sign;
-
-
-                            startAliAuth(authInfo);
-
-//                            Runnable authRunnable = new Runnable() {
-//
-//                                @Override
-//                                public void run() {
-//
-//                                    Log.i("tag","thread");
-//                                    // 构造AuthTask 对象
-//                                    AuthTask authTask = new AuthTask(LoginActivity.this);
-//                                    // 调用授权接口，获取授权结果
-//                                    Map<String, String> result = authTask.authV2(authInfo, true);
-//
-//                                    Message msg = Message.obtain();
-//                                    msg.what = SDK_AUTH_FLAG;
-//                                    msg.obj = result;
-//                                    mHandler.sendMessage(msg);
-//
-//                                }
-//                            };
-//
-//                            // 必须异步调用
-//                            Thread authThread = new Thread(authRunnable);
-//                            authThread.start();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(String meg) {
-                        super.onError(meg);
-                        Log.i("tag", OkHttpUtils.decodeUnicode(meg));
-                    }
-                });
-                break;
-            case R.id.wechat:
-
-                if (!ButtonUtils.isFastDoubleClick()) {
-                    setWXLogin();
-                }
-                break;
-        }
-    }
-
-    private static final int SDK_PAY_FLAG = 1;
-    private static final int SDK_AUTH_FLAG = 2;
-
     //    @SuppressLint("HandlerLeak")
 //    private Handler mHandler = new Handler(Looper.getMainLooper()) {
 //        public void handleMessage(Message msg) {
@@ -323,74 +295,92 @@ public class LoginActivity extends BaseActivity {
 //
 //    };
 
+    @OnClick({R.id.img_login_back, R.id.iv_show_pd, R.id.btn_login, R.id.tv_to_register_login, R.id.tv_forget_psw, R.id.alipay, R.id.wechat})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.img_login_back:
+                LoginActivity.this.finish();
+                break;
+            case R.id.iv_show_pd:
+                isShowPd();
+                break;
+            case R.id.btn_login:
+                booleanLogin();
+                break;
+            case R.id.tv_to_register_login:  //注册
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.tv_forget_psw:  //忘记密码
+                Intent intent1 = new Intent(LoginActivity.this, ResetPassWordActivity.class);
+                startActivity(intent1);
+                break;
 
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
-                if (TextUtils.equals(authResult.getResultStatus(), "9000")) {
-                    if (authResult.getResultCode().equals("200")) {
+            case R.id.alipay:
 
-                        String authcode = authResult.getAuthCode();
-                        Log.i("logauthcode", authcode);
+                OkHttpUtils.getInstance().getJson(Contants.AUTH_ALIPAY + "&uid=" + uid, new OkHttpUtils.HttpCallBack() {
+                    @Override
+                    public void onSusscess(final String data) {
 
-                        OkHttpUtils.getInstance().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
-                            @Override
-                            public void onSusscess(String data) {
+                        Log.i("tag", OkHttpUtils.decodeUnicode(data));
+                        try {
+                            JSONObject object = new JSONObject(data);
 
-                                Log.i("tag",OkHttpUtils.decodeUnicode(data));
-                                String[] str = data.split("@");
-                                if (str.length > 1) {
-                                    AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
-                                    session = str[1];
-                                    SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
+                            String authInfo = object.getString("url");
+                            //                            String sign = object.getString("sign");
+                            //                            String target_id = object.getString("target_id");
+                            //
+                            //                            sign = URLEncoder.encode(sign, "utf-8");
+                            //                            Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, false);
+                            //                            String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
+                            //
+                            //                            final String authInfo = info + "&sign=" + sign;
 
-                                    Log.i("tag", "user" + bean.getUid()+"--"+session);
+                            Log.i("dddd", authInfo);
+                            startAliAuth(authInfo);
 
-                                    if (TextUtils.equals("NOBIND", bean.getResult())) {
-                                        //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
-                                        startActivity(new Intent(LoginActivity.this, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()).putExtra("avatar",bean.getAvatar()).putExtra("nickname",bean.getNick_name()));
-
-                                    } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
-
-                                        SPUtils.put(LoginActivity.this, Constant.MSESSION, session);
-                                        SPUtils.put(LoginActivity.this, Constant.User_Uid, bean.getUid().trim());
-                                        SPUtils.put(LoginActivity.this, Constant.User_Phone, bean.getUsername());
-                                        SPUtils.put(LoginActivity.this, Constant.User_Psw, bean.getPassword());
-                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(i);
-                                        finish();
-                                    } else {
-                                        ToastUtil.getInstance().showToast(bean.getWorngMsg());
-                                    }
-                                }
-
-                            }
-
-                            @Override
-                            public void onError(String meg) {
-                                super.onError(meg);
-                                ToastUtils.toastForShort(LoginActivity.this, "登录出错");
-                            }
-                        });
-
-                    } else {
-                        ToastUtil.getInstance().showToast( "授权失败");
+                            //                            Runnable authRunnable = new Runnable() {
+                            //
+                            //                                @Override
+                            //                                public void run() {
+                            //
+                            //                                    Log.i("tag","thread");
+                            //                                    // 构造AuthTask 对象
+                            //                                    AuthTask authTask = new AuthTask(LoginActivity.this);
+                            //                                    // 调用授权接口，获取授权结果
+                            //                                    Map<String, String> result = authTask.authV2(authInfo, true);
+                            //
+                            //                                    Message msg = Message.obtain();
+                            //                                    msg.what = SDK_AUTH_FLAG;
+                            //                                    msg.obj = result;
+                            //                                    mHandler.sendMessage(msg);
+                            //
+                            //                                }
+                            //                            };
+                            //
+                            //                            // 必须异步调用
+                            //                            Thread authThread = new Thread(authRunnable);
+                            //                            authThread.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                } else if (authResult.getResultStatus().equals("6001")) {
-                    ToastUtil.getInstance().showToast( "用户取消");
-                } else if (authResult.getResultStatus().equals("4000")) {
-                    ToastUtil.getInstance().showToast( "支付宝异常");
-                } else if (authResult.getResultStatus().equals("6002")) {
-                    ToastUtil.getInstance().showToast( "网络连接出错");
-                } else {
-                    ToastUtil.getInstance().showToast("授权失败");
+
+                    @Override
+                    public void onError(String meg) {
+                        super.onError(meg);
+                        Log.i("tag", OkHttpUtils.decodeUnicode(meg));
+                    }
+                });
+                break;
+            case R.id.wechat:
+
+                if (!ButtonUtils.isFastDoubleClick()) {
+                    setWXLogin();
                 }
-            }
+                break;
         }
-    };
+    }
 
     private void startAliAuth(final String info) {
         Runnable authRunnable = new Runnable() {

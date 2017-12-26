@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -30,10 +29,8 @@ import com.google.gson.Gson;
 import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.activity.AlipayBindActivity;
-import com.renhuikeji.wanlb.wanlibao.activity.LoginActivity;
 import com.renhuikeji.wanlb.wanlibao.activity.MainActivity;
 import com.renhuikeji.wanlb.wanlibao.alipay.AuthResult;
-import com.renhuikeji.wanlb.wanlibao.alipay.OrderInfoUtil2_0;
 import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginBean;
 import com.renhuikeji.wanlb.wanlibao.bean.MemberInfoBean;
 import com.renhuikeji.wanlb.wanlibao.bean.WeChatCrashBean;
@@ -91,6 +88,76 @@ public class WithDrawFragment extends Fragment {
     private MainActivity context ;
 
     private String msgg = "首次提现到微信钱包，请先关注“万利宝分享平台”微信公众号：yasbao,并从公众号底部菜单：会员中心-》转帐提现，以 后就可以直接在这里提现到微信钱包啦！";
+    //----------------------------------------------------
+    private String session;
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler2 = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
+                if (TextUtils.equals(authResult.getResultStatus(), "9000")) {
+                    if (authResult.getResultCode().equals("200")) {
+
+                        String authcode = authResult.getAuthCode();
+                        Log.i("logauthcode", authcode);
+
+                        OkHttpUtils.getInstance().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
+                            @Override
+                            public void onSusscess(String data) {
+
+                                Log.i("tag", OkHttpUtils.decodeUnicode(data));
+                                String[] str = data.split("@");
+                                if (str.length > 1) {
+                                    AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
+                                    session = str[1];
+                                    SPUtils.put(context, Constant.MSESSION, session);
+
+                                    Log.i("tag", "user" + bean.getUid() + "--" + session);
+
+                                    if (TextUtils.equals("NOBIND", bean.getResult())) {
+                                        //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
+                                        startActivity(new Intent(context, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()).putExtra("avatar", bean.getAvatar()).putExtra("nickname", bean.getNick_name()));
+
+                                    } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
+
+                                        SPUtils.put(context, Constant.MSESSION, session);
+                                        SPUtils.put(context, Constant.User_Uid, bean.getUid().trim());
+                                        SPUtils.put(context, Constant.User_Phone, bean.getUsername());
+                                        SPUtils.put(context, Constant.User_Psw, bean.getPassword());
+                                        Intent i = new Intent(context, MainActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(i);
+                                        //context.finish();
+                                    } else {
+                                        ToastUtils.toastForShort(context, bean.getWorngMsg());
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onError(String meg) {
+                                super.onError(meg);
+                                ToastUtils.toastForShort(context, "登录出错");
+                            }
+                        });
+
+                    } else {
+                        ToastUtil.getInstance().showToast("授权失败");
+                    }
+                } else if (authResult.getResultStatus().equals("6001")) {
+                    ToastUtil.getInstance().showToast("用户取消");
+                } else if (authResult.getResultStatus().equals("4000")) {
+                    ToastUtil.getInstance().showToast("支付宝异常");
+                } else if (authResult.getResultStatus().equals("6002")) {
+                    ToastUtil.getInstance().showToast("网络连接出错");
+                } else {
+                    ToastUtil.getInstance().showToast("授权失败");
+                }
+            }
+        }
+    };
+
     @SuppressLint("HandlerLeak")
     @Nullable
     @Override
@@ -138,7 +205,6 @@ public class WithDrawFragment extends Fragment {
         return view;
 
     }
-
 
     /**
      * 获取用户信息
@@ -230,7 +296,6 @@ public class WithDrawFragment extends Fragment {
             }
         });
     }
-
 
     @OnClick({R.id.img_wechat_cash_back, R.id.tv_wechat_cash_confirm,R.id.tv_alipay_cash_confirm})
     public void onViewClicked(View view) {
@@ -367,75 +432,6 @@ public class WithDrawFragment extends Fragment {
             }
         });
     }
-    //----------------------------------------------------
-    private String session;
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler2 = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                AuthResult authResult = new AuthResult((Map<String, String>) msg.obj, true);
-                if (TextUtils.equals(authResult.getResultStatus(), "9000")) {
-                    if (authResult.getResultCode().equals("200")) {
-
-                        String authcode = authResult.getAuthCode();
-                        Log.i("logauthcode", authcode);
-
-                        OkHttpUtils.getInstance().getYzmJson(Contants.ALIPAY_LOGIN + "&auth_code=" + authcode, new OkHttpUtils.HttpCallBack() {
-                            @Override
-                            public void onSusscess(String data) {
-
-                                Log.i("tag",OkHttpUtils.decodeUnicode(data));
-                                String[] str = data.split("@");
-                                if (str.length > 1) {
-                                    AlipayLoginBean bean = new Gson().fromJson(str[0], AlipayLoginBean.class);
-                                    session = str[1];
-                                    SPUtils.put(context, Constant.MSESSION, session);
-
-                                    Log.i("tag", "user" + bean.getUid()+"--"+session);
-
-                                    if (TextUtils.equals("NOBIND", bean.getResult())) {
-                                        //ToastUtil.getInstance().showToast(OkHttpUtils.decodeUnicode(bean.getWorngMsg()));
-                                        startActivity(new Intent(context, AlipayBindActivity.class).putExtra("access_code", bean.getAccess_token()).putExtra("uid", bean.getUser_id()).putExtra("avatar",bean.getAvatar()).putExtra("nickname",bean.getNick_name()));
-
-                                    } else if (TextUtils.equals("LOGIN_SUCESS", bean.getResult())) {
-
-                                        SPUtils.put(context, Constant.MSESSION, session);
-                                        SPUtils.put(context, Constant.User_Uid, bean.getUid().trim());
-                                        SPUtils.put(context, Constant.User_Phone, bean.getUsername());
-                                        SPUtils.put(context, Constant.User_Psw, bean.getPassword());
-                                        Intent i = new Intent(context, MainActivity.class);
-                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(i);
-                                        //context.finish();
-                                    } else {
-                                        ToastUtils.toastForShort(context, bean.getWorngMsg());
-                                    }
-                                }
-
-                            }
-
-                            @Override
-                            public void onError(String meg) {
-                                super.onError(meg);
-                                ToastUtils.toastForShort(context, "登录出错");
-                            }
-                        });
-
-                    } else {
-                        ToastUtil.getInstance().showToast( "授权失败");
-                    }
-                } else if (authResult.getResultStatus().equals("6001")) {
-                    ToastUtil.getInstance().showToast( "用户取消");
-                } else if (authResult.getResultStatus().equals("4000")) {
-                    ToastUtil.getInstance().showToast( "支付宝异常");
-                } else if (authResult.getResultStatus().equals("6002")) {
-                    ToastUtil.getInstance().showToast( "网络连接出错");
-                } else {
-                    ToastUtil.getInstance().showToast("授权失败");
-                }
-            }
-        }
-    };
 
     private void startAliAuth(final String info) {
         Runnable authRunnable = new Runnable() {
@@ -543,17 +539,21 @@ public class WithDrawFragment extends Fragment {
             @Override
             public void onSusscess(String data) {
 
-                Log.i("tag", OkHttpUtils.decodeUnicode(data));
+                //Log.i("tag", OkHttpUtils.decodeUnicode(data));
                 try {
                     JSONObject object = new JSONObject(data);
-                    String sign = object.getString("sign");
-                    String target_id = object.getString("target_id");
 
-                    Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, true);
-                    String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
 
-                    final String authInfo = info + "&" + sign;
+                    String authInfo = object.getString("url");
+                    //                    String sign = object.getString("sign");
+                    //                    String target_id = object.getString("target_id");
+                    //
+                    //                    Map<String, String> authInfoMap = OrderInfoUtil2_0.buildAuthInfoMap(Contants.PID, Contants.APPID, target_id, false);
+                    //                    String info = OrderInfoUtil2_0.buildOrderParam(authInfoMap);
+                    //
+                    //                    final String authInfo = info + "&sign=" + sign;
 
+                    Log.i("authinfo", authInfo);
                     startAliAuth(authInfo);
 
 //                    Runnable authRunnable = new Runnable() {
@@ -583,7 +583,8 @@ public class WithDrawFragment extends Fragment {
             @Override
             public void onError(String meg) {
                 super.onError(meg);
-                Log.i("tag", OkHttpUtils.decodeUnicode(meg));
+                Log.i("tag", "出错");
+                //Log.i("tag", OkHttpUtils.decodeUnicode(meg));
             }
         });
 
