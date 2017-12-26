@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.renhuikeji.wanlb.wanlibao.App;
 import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.bean.AlipayLoginCodeBean;
 import com.renhuikeji.wanlb.wanlibao.config.ConfigValue;
@@ -48,6 +46,7 @@ import butterknife.OnClick;
 
 public class WechatBindActivity extends BaseActivity {
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.et_phone)
@@ -62,10 +61,14 @@ public class WechatBindActivity extends BaseActivity {
     TextView etWechatCashPhone;
     @BindView(R.id.tv_get_yzm)
     TextView tvGetYzm;
-
+    String session;
+    String res_yzm = "";
     private String uid;
     private String openid;
     private Context context;
+    private String access_code;
+    private int index;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +100,6 @@ public class WechatBindActivity extends BaseActivity {
                 break;
         }
     }
-
-    String session;
-    String res_yzm = "";
 
     //获取验证码
     private void getYzm() {
@@ -199,8 +199,6 @@ public class WechatBindActivity extends BaseActivity {
         requestRegist(phone, yzm);
     }
 
-    private String access_code;
-
     private void requestRegist(final String phone, String yzm) {
         //DialogUtils.showProgressDlg(AlipayBindActivity.this, getString(R.string.loading));
 
@@ -265,9 +263,6 @@ public class WechatBindActivity extends BaseActivity {
 
     }
 
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private int index;
-
     private void changeBtnGetCode() {
         final Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -286,13 +281,13 @@ public class WechatBindActivity extends BaseActivity {
                         index--;
                         if (index <= 0) {
                             tvGetYzm.setClickable(true);
-                            tvGetYzm.setText("可操作");
+                            tvGetYzm.setText("获取验证码");
 
                             timer.cancel();
                             return;
                         }
 
-                        tvGetYzm.setText(index + "秒(不可操作)");
+                        tvGetYzm.setText(index + "秒后重试");
                     }
                 });
 

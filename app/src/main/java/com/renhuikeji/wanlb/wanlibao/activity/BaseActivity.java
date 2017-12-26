@@ -8,54 +8,28 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.hyphenate.chat.ChatManager;
 import com.renhuikeji.wanlb.wanlibao.App;
-import com.renhuikeji.wanlb.wanlibao.AppManager;
 import com.renhuikeji.wanlb.wanlibao.R;
-import com.renhuikeji.wanlb.wanlibao.bean.ShareBean;
-import com.renhuikeji.wanlb.wanlibao.config.Contants;
-import com.renhuikeji.wanlb.wanlibao.fragment.MyFragment;
-import com.renhuikeji.wanlb.wanlibao.utils.ButtonUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.Constant;
 import com.renhuikeji.wanlb.wanlibao.utils.DialogManager;
-import com.renhuikeji.wanlb.wanlibao.utils.JudgePhoneBrand;
 import com.renhuikeji.wanlb.wanlibao.utils.MsgDbHelper;
-import com.renhuikeji.wanlb.wanlibao.utils.OkHttpUtils;
 import com.renhuikeji.wanlb.wanlibao.utils.SPUtils;
-import com.renhuikeji.wanlb.wanlibao.utils.StatusBarUtil;
-import com.renhuikeji.wanlb.wanlibao.utils.ToastUtil;
 import com.renhuikeji.wanlb.wanlibao.utils.ToastUtils;
-import com.renhuikeji.wanlb.wanlibao.views.SharePopupWindow;
 import com.renhuikeji.wanlb.wanlibao.widget.PushDialog;
-import com.tencent.connect.share.QQShare;
-import com.tencent.connect.share.QzoneShare;
-import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.renhuikeji.wanlb.wanlibao.utils.ActivityUtils.isTopActivity;
-import static com.renhuikeji.wanlb.wanlibao.utils.SPUtils.get;
 
 //封装基类activity，自带自定义dialog
 public class BaseActivity extends AppCompatActivity {
 
-    private App app;
-
     public Context context;
+    PushDialog dialog = null;
+    private App app;
     private DialogReceiver dialogReceiver;
     private boolean isMainDisplay=true;
     private MsgDbHelper helper;
@@ -67,48 +41,6 @@ public class BaseActivity extends AppCompatActivity {
 
     public void setApp(App app) {
         this.app = app;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-
-        Log.i("tag",getClass().getSimpleName());
-
-        if(!getClass().getSimpleName().equals("MainActivity")) {
-
-//            if(getClass().getSimpleName().equals("TaoBaoSearchActivity")){
-//                StatusBarUtil.setColor(this, getResources().getColor(R.color.colorWhite));
-//            }else
-//
-//            StatusBarUtil.setColor(this, getResources().getColor(R.color.all_pink), 55);
-//            if (JudgePhoneBrand.SYS_MIUI.equals(JudgePhoneBrand.getSystem())) {
-//                //            initSystemBar();
-//                requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                //         隐藏状态栏
-//                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//            } else {
-//                StatusBarUtil.setColor(this, getResources().getColor(R.color.all_pink), 55);
-//            }
-        }
-
-
-        setContentView(R.layout.activity_main);
-        super.onCreate(savedInstanceState);
-        app = (App) this.getApplication();
-        helper=app.getDbHelper();
-        dialogReceiver = new DialogReceiver();
-        IntentFilter filter = new IntentFilter(Constant.RECEIVER_DIALOG);
-        IntentFilter filter1 = new IntentFilter(Constant.QIANDAO);
-        registerReceiver(dialogReceiver, filter);
-        //AppManager.getAppManager().addActivity(this);
-        this.context = this;
-
-        app.bindActivity(this);
-
-        //initSharePop();
-
     }
 
 //    public SharePopupWindow sharePopupWindow;
@@ -255,8 +187,50 @@ public class BaseActivity extends AppCompatActivity {
 //    }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+
+        Log.i("tag", getClass().getSimpleName());
+
+        if (!getClass().getSimpleName().equals("MainActivity")) {
+
+            //            if(getClass().getSimpleName().equals("TaoBaoSearchActivity")){
+            //                StatusBarUtil.setColor(this, getResources().getColor(R.color.colorWhite));
+            //            }else
+            //
+            //            StatusBarUtil.setColor(this, getResources().getColor(R.color.all_pink), 55);
+            //            if (JudgePhoneBrand.SYS_MIUI.equals(JudgePhoneBrand.getSystem())) {
+            //                //            initSystemBar();
+            //                requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //                //         隐藏状态栏
+            //                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            //                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            //            } else {
+            //                StatusBarUtil.setColor(this, getResources().getColor(R.color.all_pink), 55);
+            //            }
+        }
+
+
+        setContentView(R.layout.activity_main);
+        super.onCreate(savedInstanceState);
+        app = (App) this.getApplication();
+        helper = app.getDbHelper();
+        dialogReceiver = new DialogReceiver();
+        IntentFilter filter = new IntentFilter(Constant.RECEIVER_DIALOG);
+        IntentFilter filter1 = new IntentFilter(Constant.QIANDAO);
+        registerReceiver(dialogReceiver, filter);
+        //AppManager.getAppManager().addActivity(this);
+        this.context = this;
+
+
+        //initSharePop();
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        app.bindActivity(this);
         isMainDisplay= isTopActivity("com.renhuikeji.wanlb.wanlibao","com.renhuikeji.wanlb.wanlibao.activity.MainActivity",this);
         SPUtils.put(this,Constant.MAIN_DISPLAY,isMainDisplay);
 //        initHuanXinListener();
@@ -305,7 +279,6 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -320,20 +293,6 @@ public class BaseActivity extends AppCompatActivity {
         ToastUtils.toastForShort(BaseActivity.this,string);
     }
 
-    class DialogReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-//           当mainactivity不在前台时候,只打开一个dialog
-            if(!isMainDisplay){
-                SPUtils.put(context,Constant.RECEIVE_MSG,true);
-            }
-            showMsgDialog();
-
-        }
-    }
-
-    PushDialog dialog=null;
     private void showMsgDialog() {
         DialogManager.clear();
         List<com.renhuikeji.wanlb.wanlibao.bean.Message> msgs=helper.queryUnReadMsg();
@@ -353,8 +312,22 @@ public class BaseActivity extends AppCompatActivity {
         }
 
     }
+
     public Dialog getDialog(){
         return dialog;
+    }
+
+    class DialogReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //           当mainactivity不在前台时候,只打开一个dialog
+            if (!isMainDisplay) {
+                SPUtils.put(context, Constant.RECEIVE_MSG, true);
+            }
+            showMsgDialog();
+
+        }
     }
 
 

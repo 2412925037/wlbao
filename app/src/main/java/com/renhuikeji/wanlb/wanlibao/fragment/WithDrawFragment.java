@@ -265,12 +265,12 @@ public class WithDrawFragment extends Fragment {
 
                     MemberInfoBean.UserinfoBean userinfoBean = bean.getUserinfo();
                     openid_yasbao = userinfoBean.getOpenid_yasbao();
-                    Message message = mHandler.obtainMessage();
-                    //如果openid为空了，弹出提示框
-                    if (TextUtils.isEmpty(openid_yasbao)) {
-                        message.what = 1;
-                    }
-                    mHandler.sendMessage(message);
+                    //                    Message message = mHandler.obtainMessage();
+                    //                    //如果openid为空了，弹出提示框
+                    //                    if (TextUtils.isEmpty(openid_yasbao)) {
+                    //                        message.what = 1;
+                    //                    }
+                    //                    mHandler.sendMessage(message);
 
                     user_money = userinfoBean.getMoney();
                     if (!TextUtils.isEmpty(user_money)) {
@@ -284,7 +284,6 @@ public class WithDrawFragment extends Fragment {
                 } else {
                     ToastUtils.toastForLong(context, "用户信息获取失败");
                 }
-
 
             }
 
@@ -329,7 +328,9 @@ public class WithDrawFragment extends Fragment {
         String money_tixian = edit_cashMoney.getText().toString();
 
         if (TextUtils.isEmpty(openid_yasbao)) {
-            ToastUtils.toastForShort(context, "请先关注万利宝微信公众号（yasbao）");
+            Message message = mHandler.obtainMessage();
+            message.what = 1;
+            mHandler.sendMessage(message);
             return false;
         }
 
@@ -384,9 +385,6 @@ public class WithDrawFragment extends Fragment {
                 if (TextUtils.equals("WRONG", bean.getResult())) {
                     ToastUtils.toastForShort(context, bean.getWorngMsg());
 
-                    Message message = mHandler.obtainMessage();
-                    message.what = 1;
-                    mHandler.sendMessage(message);
                 } else if(TextUtils.equals("SUCESS",bean.getResult())){
                     //ToastUtils.toastForShort(context, "提现成功");
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -413,13 +411,6 @@ public class WithDrawFragment extends Fragment {
                     mHandler.sendMessage(message);
                     // finish();
                 }else{
-                    Message message = mHandler.obtainMessage();
-                    message.what = 1;
-                    mHandler.sendMessage(message);
-
-                    if(bean.getMsg()!=null){
-                        ToastUtil.getInstance().showToast(bean.getMsg());
-                    }else
                     ToastUtil.getInstance().showToast(bean.getWorngMsg());
                 }
             }

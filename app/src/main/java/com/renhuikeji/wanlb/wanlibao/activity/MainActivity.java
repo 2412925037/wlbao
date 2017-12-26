@@ -9,8 +9,6 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -23,7 +21,6 @@ import com.renhuikeji.wanlb.wanlibao.R;
 import com.renhuikeji.wanlb.wanlibao.bean.Message;
 import com.renhuikeji.wanlb.wanlibao.bean.ShareBean;
 import com.renhuikeji.wanlb.wanlibao.config.Contants;
-import com.renhuikeji.wanlb.wanlibao.fragment.HandleFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.IndexFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.MyFragment;
 import com.renhuikeji.wanlb.wanlibao.fragment.TaoBaoFragment;
@@ -64,15 +61,19 @@ import static com.renhuikeji.wanlb.wanlibao.utils.SPUtils.get;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, IBackInterface {
 
+    /***************分享按钮点击*****************/
+    public SharePopupWindow sharePopupWindow;
     @BindView(R.id.bottom_nav_container)
     LinearLayout bottom_nav_container;
     @BindView(R.id.fragmentRoot)
     FrameLayout fragmentRoot;
+    String APP_ID = "1106235186";
+    long exitTime = 0;
+    PushDialog dialog = null;
     private ArrayList<View> bottomNavs;
     //private Fragment fragment; //用于传递监听back键的fragment
     private FragmentManager manager;
     private FragmentTransaction transaction;
-
     private IndexFragment indexFragment;
     private TaoBaoFragment taoBaoFragment;
     //private HandleFragment handleFragment;
@@ -83,6 +84,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private AlarmManager am;
     private App app;
     private MsgDbHelper helper;
+    private int statusHeight;
+    private String share_title;
+    private String share_content;
+
+    //    private void initFragment() {
+    //        indexFragment = new IndexFragment();
+    //        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+    //        fragmentTransaction.add(R.id.fragmentRoot, indexFragment, "homeFragment");
+    //        fragmentTransaction.commit();
+    //    }
+    private String share_logo;
+    private String share_url;
+    private Tencent mTencent;
+    private BaseUiListener mListener;
+    private int selectedId = 0;
 
     private int getStatusBarHeight() {
         int statusBarHeight;
@@ -90,11 +106,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         statusBarHeight = getResources().getDimensionPixelSize(resourceId);
         return statusBarHeight;
     }
-    private int statusHeight;
+
     public int getStatusHeight() {
         return statusHeight;
     }
-    String APP_ID = "1106235186";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,17 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         initSharePop();
 
-        //app.bindActivity(MainActivity.this);
-        boolean b = (boolean) SPUtils.get(this, Constant.MAIN_DISPLAY, false);
-        boolean isReceive = (boolean) SPUtils.get(this, Constant.RECEIVE_MSG, false);
-        //        如果此时不在mainactivity并且接受到推送,就把dialog取消.
-        if (isReceive) {
-            Dialog dialog = getDialog();
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-        }
-        showMsgDialog();
+
     }
 
     public void permission() {
@@ -156,14 +162,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         bottomNavs.get(0).setSelected(true);
         startFragment(0);
     }
-
-//    private void initFragment() {
-//        indexFragment = new IndexFragment();
-//        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-//        fragmentTransaction.add(R.id.fragmentRoot, indexFragment, "homeFragment");
-//        fragmentTransaction.commit();
-//    }
-
 
     /**
      * 开启提醒
@@ -193,22 +191,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-
+        app.bindActivity(MainActivity.this);
+        boolean b = (boolean) SPUtils.get(this, Constant.MAIN_DISPLAY, false);
+        boolean isReceive = (boolean) SPUtils.get(this, Constant.RECEIVE_MSG, false);
+        //        如果此时不在mainactivity并且接受到推送,就把dialog取消.
+        if (isReceive) {
+            Dialog dialog = getDialog();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+        }
+        showMsgDialog();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //app.unbindActivity(MainActivity.this);
+        app.unbindActivity(MainActivity.this);
         TimeRemind.canalAlarm(MainActivity.this, "activity.wch.alarm");
     }
-
-    /***************分享按钮点击*****************/
-    public SharePopupWindow sharePopupWindow;
-    private String share_title;
-    private String share_content;
-    private String share_logo;
-    private String share_url;
 
     private void initSharePop() {
 
@@ -225,8 +226,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 OkHttpUtils.getInstance().getDatas(MainActivity.this, url, msession, new OkHttpUtils.HttpCallBack() {
                     @Override
                     public void onSusscess(String data) {
-
-
 
                         ShareBean shareBean = new Gson().fromJson(data,ShareBean.class);
                         share_title = shareBean.getShareData().getTitle();
@@ -305,28 +304,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mTencent.shareToQQ(this, params, mListener);
     }
 
-    private Tencent mTencent;
-
-    class BaseUiListener implements IUiListener {
-
-        @Override
-        public void onComplete(Object o) {
-            ToastUtil.getInstance().showToast("分享成功");
-        }
-
-        @Override
-        public void onError(UiError uiError) {
-            ToastUtil.getInstance().showToast("分享失败");
-        }
-
-        @Override
-        public void onCancel() {
-            ToastUtil.getInstance().showToast("分享取消");
-        }
-    }
-
-    private BaseUiListener mListener;
-
     public void shareLinkPage(boolean isTimelineCb) {
 
 
@@ -345,7 +322,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         App.api.sendReq(req);
     }
-
 
     @Override
     public void onClick(View v) {
@@ -374,8 +350,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         transaction = manager.beginTransaction();
         startFragment(i);
     }
-
-    private int selectedId = 0;
 
     private void startFragment(int i) {
         // transaction = manager.beginTransaction();
@@ -443,8 +417,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         transaction.commitAllowingStateLoss();
     }
-
-    long exitTime = 0;
 
     // 点击返回按钮
     @Override
@@ -524,7 +496,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             transaction.hide(myFragment);
         }
 
-
     }
 
     //登录须重写onActivityResult方法
@@ -543,7 +514,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         this.taoBaoFragment = fragment;
     }
 
-    PushDialog dialog=null;
     private void showMsgDialog() {
         DialogManager.clear();
         List<Message> msgs=helper.queryUnReadMsg();
@@ -562,5 +532,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
 
+    }
+
+    class BaseUiListener implements IUiListener {
+
+        @Override
+        public void onComplete(Object o) {
+            ToastUtil.getInstance().showToast("分享成功");
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            ToastUtil.getInstance().showToast("分享失败");
+        }
+
+        @Override
+        public void onCancel() {
+            ToastUtil.getInstance().showToast("分享取消");
+        }
     }
 }

@@ -44,6 +44,52 @@ import cn.jpush.android.api.TagAliasCallback;
 public class RegisterActivity extends BaseActivity {
 
 
+    private static final int MSG_SET_ALIAS = 1001;
+    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
+
+        @Override
+        public void gotResult(int code, String alias, Set<String> tags) {
+            String logs;
+            switch (code) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    Log.i("wch", logs);
+                    break;
+
+                case 6002:
+                    logs = "别名设置超时，60s后重试";
+                    Log.i("wch", logs);
+                    if (JpushUtil.isConnected(getApplicationContext())) {
+                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 1000 * 60);
+                    } else {
+                        Log.i("wch", "无网络");
+                    }
+                    break;
+
+                default:
+                    logs = "Failed with errorCode = " + code;
+                    Log.e("wch", logs);
+            }
+
+            //            JpushUtil.showToast(logs, getApplicationContext());
+        }
+
+    };
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_SET_ALIAS:
+                    JPushInterface.setAliasAndTags(getApplicationContext(), (String) msg.obj, null, mAliasCallback);
+                    break;
+            }
+        }
+    };
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    public int res_yzm;
+    public LoadingDialog loadingDialog;
     @BindView(R.id.et_phone)
     EditText et_phone;
     @BindView(R.id.et_yzm)
@@ -54,7 +100,6 @@ public class RegisterActivity extends BaseActivity {
     EditText et_password_again;
     @BindView(R.id.inputcode)
     EditText inputcode;
-
     @BindView(R.id.checkbox_register)
     CheckBox checkbox_register;
     @BindView(R.id.btn_register)
@@ -63,14 +108,17 @@ public class RegisterActivity extends BaseActivity {
     ImageView imgRegisterBack;
     @BindView(R.id.tv_get_yzm)
     TextView tvGetYzm;
+    String phone;
+    /**
+     * 验证码
+     */
+    String session;
     private CodeUtils codeUtils;
-    public int res_yzm;
-    public LoadingDialog loadingDialog;
     private String baseUrl;
     private String apikey;
     private String uid;
-
     private Context context;
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +138,6 @@ public class RegisterActivity extends BaseActivity {
         codeUtils = CodeUtils.getInstance();
         Bitmap bitmap = codeUtils.createBitmap();
     }
-
-    String phone;
 
     private void checkPersonalData() {
         phone = et_phone.getText().toString().trim();
@@ -130,7 +176,6 @@ public class RegisterActivity extends BaseActivity {
         requestRegister(phone, password, yzm);
     }
 
-
     @OnClick({R.id.img_register_back, R.id.btn_register, R.id.tv_get_yzm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -145,11 +190,6 @@ public class RegisterActivity extends BaseActivity {
                 break;
         }
     }
-
-    /**
-     * 验证码
-     */
-    String session;
 
     private void getYzm() {
         phone = et_phone.getText().toString().trim();
@@ -217,6 +257,7 @@ public class RegisterActivity extends BaseActivity {
         }
         requestRegist(phone, password, post_yzm);
     }
+    //------------------------------------------------------------
 
     private void requestRegist(final String phone, final String password, int post_yzm) {
         DialogUtils.showProgressDlg(RegisterActivity.this, getString(R.string.loading));
@@ -262,7 +303,6 @@ public class RegisterActivity extends BaseActivity {
         });
     }
 
-
     private void setAlias(String name) {
         if (TextUtils.isEmpty(name)) {
             ToastUtils.toastForShort(RegisterActivity.this, "别名不能为空");
@@ -276,56 +316,6 @@ public class RegisterActivity extends BaseActivity {
         //调用JPush API设置Alias
         mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, name));
     }
-
-    private static final int MSG_SET_ALIAS = 1001;
-
-    @SuppressLint("HandlerLeak")
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MSG_SET_ALIAS:
-                    JPushInterface.setAliasAndTags(getApplicationContext(), (String) msg.obj, null, mAliasCallback);
-                    break;
-            }
-        }
-    };
-
-    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
-
-        @Override
-        public void gotResult(int code, String alias, Set<String> tags) {
-            String logs;
-            switch (code) {
-                case 0:
-                    logs = "Set tag and alias success";
-                    Log.i("wch", logs);
-                    break;
-
-                case 6002:
-                    logs = "别名设置超时，60s后重试";
-                    Log.i("wch", logs);
-                    if (JpushUtil.isConnected(getApplicationContext())) {
-                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SET_ALIAS, alias), 1000 * 60);
-                    } else {
-                        Log.i("wch", "无网络");
-                    }
-                    break;
-
-                default:
-                    logs = "Failed with errorCode = " + code;
-                    Log.e("wch", logs);
-            }
-
-            //            JpushUtil.showToast(logs, getApplicationContext());
-        }
-
-    };
-    //------------------------------------------------------------
-
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private int index;
 
     private void changeBtnGetCode() {
         final Timer timer = new Timer();
@@ -345,13 +335,13 @@ public class RegisterActivity extends BaseActivity {
                         index--;
                         if (index <= 0) {
                             tvGetYzm.setClickable(true);
-                            tvGetYzm.setText("可操作");
+                            tvGetYzm.setText("获取验证码");
 
                             timer.cancel();
                             return;
                         }
 
-                        tvGetYzm.setText(index + "秒(不可操作)");
+                        tvGetYzm.setText(index + "秒后重试");
                     }
                 });
 

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -47,6 +46,7 @@ import butterknife.OnClick;
 
 public class AlipayBindActivity extends BaseActivity {
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.et_phone)
@@ -61,9 +61,12 @@ public class AlipayBindActivity extends BaseActivity {
     ImageView cimgWechatCashIcon;
     @BindView(R.id.tv_get_yzm)
     TextView tvGetYzm;
-
+    String session;
+    String res_yzm = "";
     private String user_id;
     private Context context;
+    private String access_code;
+    private int index;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,9 +97,6 @@ public class AlipayBindActivity extends BaseActivity {
                 break;
         }
     }
-
-    String session;
-    String res_yzm = "";
 
     //获取验证码
     private void getYzm() {
@@ -193,8 +193,6 @@ public class AlipayBindActivity extends BaseActivity {
         getApp().finishAllActivity();
     }
 
-    private String access_code;
-
     private void requestRegist(final String phone, String yzm) {
         //DialogUtils.showProgressDlg(AlipayBindActivity.this, getString(R.string.loading));
 
@@ -261,9 +259,6 @@ public class AlipayBindActivity extends BaseActivity {
 
     }
 
-    private final Handler handler = new Handler(Looper.getMainLooper());
-    private int index;
-
     private void changeBtnGetCode() {
         final Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -282,13 +277,13 @@ public class AlipayBindActivity extends BaseActivity {
                         index--;
                         if (index <= 0) {
                             tvGetYzm.setClickable(true);
-                            tvGetYzm.setText("可操作");
+                            tvGetYzm.setText("获取验证码");
 
                             timer.cancel();
                             return;
                         }
 
-                        tvGetYzm.setText(index + "秒(不可操作)");
+                        tvGetYzm.setText(index + "秒后重试");
                     }
                 });
 
